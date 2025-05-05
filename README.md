@@ -1,4 +1,4 @@
-# POS-Projekt
+# ProphetPlay
 Dies ist ein Beispielprojekt, das ein Frontend und ein Backend beinhaltet.
 
 ## Installation
