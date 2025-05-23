@@ -22,6 +22,7 @@ namespace ProphetPlay
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        // Live Spiele
         public async Task<JObject> GetLiveMatchesAsync()
         {
             string url = "https://v3.football.api-sports.io/fixtures?live=all";
@@ -46,7 +47,7 @@ namespace ProphetPlay
             }
         }
 
-        // Methode für ein bestimmtes Datum
+        // Spiel für ein bestimmtes Datum
         public async Task<JObject> GetMatchesByDateAsync(string date)
         {
             string url = $"https://v3.football.api-sports.io/fixtures?date={date}";
@@ -71,8 +72,54 @@ namespace ProphetPlay
             }
         }
 
+        // News
+        public async Task<JObject> GetNewsAsync()
+        {
+            string url = "https://v3.football.api-sports.io/news";
 
+            try
+            {
+                var response = await _client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
 
+                string content = await response.Content.ReadAsStringAsync();
+                return JObject.Parse(content);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"API-Fehler: {ex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unerwarteter Fehler: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<JObject> GetLeaguesAsync()
+        {
+            string url = "https://v3.football.api-sports.io/leagues";
+
+            try
+            {
+                var response = await _client.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                string content = await response.Content.ReadAsStringAsync();
+                return JObject.Parse(content);
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"API-Fehler: {ex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unerwarteter Fehler: {ex.Message}");
+                return null;
+            }
+        }
 
     }
 }
