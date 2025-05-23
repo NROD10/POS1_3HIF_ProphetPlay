@@ -15,20 +15,25 @@ using System.Windows.Shapes;
 namespace ProphetPlay
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Interaction logic for RegisterWindow.xaml
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class RegisterWindow : Window
     {
-        public LoginWindow()
+        public RegisterWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Registrieren_Click(object sender, RoutedEventArgs e)
+        private void ZurueckButton_Click(object sender, RoutedEventArgs e)
         {
-            RegisterWindow register = new RegisterWindow();
-            register.Show();
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show();
             this.Close();
+        }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
