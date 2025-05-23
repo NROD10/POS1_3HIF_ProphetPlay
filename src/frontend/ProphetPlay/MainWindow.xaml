@@ -1,12 +1,57 @@
 ﻿<Window x:Class="ProphetPlay.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ProphetPlay"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="ProphetPlay – Liveticker" 
+        Width="1280" Height="800"
+        Background="#FF1E1E1E" WindowStartupLocation="CenterScreen">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.2*" />
+            <ColumnDefinition Width="3.6*" />
+            <ColumnDefinition Width="2.2*" />
+        </Grid.ColumnDefinitions>
 
+        <!-- NEWS PANEL -->
+        <Border Grid.Column="0" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
+            <StackPanel>
+                <TextBlock Text="⚽ Fußball-News" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+                <ListBox Background="#FF383838" Foreground="White" BorderThickness="0">
+                    <ListBoxItem Content="Messi zurück in Barcelona?" />
+                    <ListBoxItem Content="Bayern verpflichtet neuen Torwart" />
+                    <ListBoxItem Content="Real siegt im El Clásico" />
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <!-- TICKER PANEL -->
+        <Border Grid.Column="1" Background="#FF252525" Margin="10" Padding="15" CornerRadius="10">
+            <StackPanel>
+                <TextBlock Text="📡 Liveticker" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+                <ComboBox Margin="0,0,0,10" Background="#FF383838" Foreground="White">
+                    <ComboBoxItem Content="Champions League"/>
+                    <ComboBoxItem Content="Bundesliga"/>
+                    <ComboBoxItem Content="La Liga"/>
+                </ComboBox>
+                <Button Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" />
+                <ListBox Margin="10,15,0,0" Background="#FF383838" Foreground="White" BorderThickness="0">
+                    <ListBoxItem Content="Champions League"/>
+                    <ListBoxItem Content="Europa League"/>
+                    <ListBoxItem Content="Österreichische Bundesliga"/>
+                </ListBox>
+            </StackPanel>
+        </Border>
+
+        <!-- GRUPPEN PANEL -->
+        <Border Grid.Column="2" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
+            <StackPanel>
+                <TextBlock Text="👥 Gruppen &amp; Punkte" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+
+                <ListBox Background="#FF383838" Foreground="White" BorderThickness="0">
+                    <ListBoxItem Content="Gruppe A – Du bist 2."/>
+                    <ListBoxItem Content="Gruppe B – Du bist 1."/>
+                </ListBox>
+                <Button Content="Gruppe verwalten" Margin="0,10,0,0" Width="160" Height="35" Background="#FF2196F3" Foreground="White" FontWeight="Bold"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
