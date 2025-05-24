@@ -15,10 +15,12 @@
         <Border Grid.Column="0" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
                 <TextBlock Text="⚽ Fußball-News" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <ListBox Background="#FF383838" Foreground="White" BorderThickness="0">
-                    <ListBoxItem Content="Messi zurück in Barcelona?" />
-                    <ListBoxItem Content="Bayern verpflichtet neuen Torwart" />
-                    <ListBoxItem Content="Real siegt im El Clásico" />
+                <ListBox x:Name="NewsListBox" Background="#FF383838" Foreground="White" BorderThickness="0" Margin="0" ItemsSource="{Binding NewsItems}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
         </Border>
