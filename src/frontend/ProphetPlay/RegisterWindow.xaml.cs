@@ -33,7 +33,7 @@ namespace ProphetPlay
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
     }
 }
