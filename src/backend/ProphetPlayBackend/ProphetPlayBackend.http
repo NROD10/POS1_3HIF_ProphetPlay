@@ -1,0 +1,6 @@
+@ProphetPlayBackend_HostAddress = http://localhost:5118
+
+GET {{ProphetPlayBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
