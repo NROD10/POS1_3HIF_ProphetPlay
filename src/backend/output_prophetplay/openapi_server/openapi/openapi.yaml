@@ -1,0 +1,100 @@
+openapi: 3.0.1
+info:
+  description: "REST API für Login, Registrierung und Spielinteraktion"
+  title: ProphetPlay API
+  version: 1.0.0
+servers:
+- description: Lokale Entwicklungsumgebung
+  url: https://localhost:5001
+paths:
+  /api/benutzer/login:
+    post:
+      operationId: api_benutzer_login_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+          description: Login erfolgreich
+        "401":
+          description: Ungültige Anmeldedaten
+      summary: Login eines Benutzers
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+  /api/benutzer/register:
+    post:
+      operationId: api_benutzer_register_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        "200":
+          description: Registrierung erfolgreich
+        "409":
+          description: Benutzername existiert bereits
+      summary: Registrierung eines neuen Benutzers
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    LoginRequest:
+      example:
+        passwort: passwort
+        benutzername: benutzername
+      properties:
+        benutzername:
+          title: benutzername
+          type: string
+        passwort:
+          title: passwort
+          type: string
+      required:
+      - benutzername
+      - passwort
+      title: LoginRequest
+      type: object
+    RegisterRequest:
+      example:
+        passwort: passwort
+        rolle: User
+        benutzername: benutzername
+      properties:
+        benutzername:
+          title: benutzername
+          type: string
+        passwort:
+          title: passwort
+          type: string
+        rolle:
+          enum:
+          - User
+          - Admin
+          title: rolle
+          type: string
+      required:
+      - benutzername
+      - passwort
+      - rolle
+      title: RegisterRequest
+      type: object
+    LoginResponse:
+      example:
+        rolle: rolle
+        benutzername: benutzername
+      properties:
+        benutzername:
+          title: benutzername
+          type: string
+        rolle:
+          title: rolle
+          type: string
+      title: LoginResponse
+      type: object
