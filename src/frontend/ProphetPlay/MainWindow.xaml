@@ -36,9 +36,9 @@
                 </ComboBox>
                 <Button Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" />
                 <ListBox Margin="10,15,0,0" Background="#FF383838" Foreground="White" BorderThickness="0">
-                    <ListBoxItem Content="Champions League"/>
-                    <ListBoxItem Content="Europa League"/>
-                    <ListBoxItem Content="Österreichische Bundesliga"/>
+                    <Button Content="Champions League" Width="486" Height="25" Background="Gray" Foreground="White" FontWeight="Bold" />
+                    <Button Content="Premier League" Width="486" Height="25" Background="Gray" Foreground="White" FontWeight="Bold" />
+                    <Button Content="La Liga" Width="486" Height="25" Background="Gray" Foreground="White" FontWeight="Bold" />
                 </ListBox>
             </StackPanel>
         </Border>

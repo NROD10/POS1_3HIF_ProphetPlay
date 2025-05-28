@@ -9,6 +9,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+
 
 
 namespace ProphetPlay
@@ -18,34 +22,34 @@ namespace ProphetPlay
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<string> NewsItems { get; set; } = new ObservableCollection<string>();
-
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
-
-            LoadNewsAsync();
+            LoadNewsAsync(); // Nachrichten laden, wenn das Fenster geöffnet wird
         }
 
-        private async void LoadNewsAsync()
+        private async Task LoadNewsAsync()
         {
-            var api = new ApiFootballService();
-            var newsData = await api.GetNewsAsync();
+            try
+            {
+                // API-Endpunkt (ersetze dies mit deiner API-URL)
+                string apiUrl = "https://example.com/api/news";
 
-            if (newsData?["response"] != null)
-            {
-                NewsItems.Clear();
-                foreach (var article in newsData["response"])
-                {
-                    string title = article["title"]?.ToString();
-                    NewsItems.Add(title);
-                }
+                using HttpClient client = new HttpClient();
+                var response = await client.GetStringAsync(apiUrl);
+
+                // JSON-Daten deserialisieren
+                var newsItems = JsonSerializer.Deserialize<List<NewsItem>>(response);
+
+                // ListBox mit den Nachrichten füllen
+                NewsListBox.ItemsSource = newsItems;
             }
-            else
+            catch (Exception ex)
             {
-                NewsItems.Add("⚠️ Keine Nachrichten verfügbar.");
+                MessageBox.Show($"Fehler beim Laden der Nachrichten: {ex.Message}");
             }
         }
     }
+
+    
 }
