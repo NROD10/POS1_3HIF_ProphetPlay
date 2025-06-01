@@ -25,30 +25,31 @@ namespace ProphetPlay
         public MainWindow()
         {
             InitializeComponent();
-            LoadNewsAsync(); // Nachrichten laden, wenn das Fenster geöffnet wird
+            LoadNews(); // Nachrichten laden, wenn das Fenster geöffnet wird
         }
 
-        private async Task LoadNewsAsync()
+        private async void LoadNews()
         {
             try
             {
-                // API-Endpunkt (ersetze dies mit deiner API-URL)
-                string apiUrl = "https://example.com/api/news";
-
-                using HttpClient client = new HttpClient();
-                var response = await client.GetStringAsync(apiUrl);
-
-                // JSON-Daten deserialisieren
-                var newsItems = JsonSerializer.Deserialize<List<NewsItem>>(response);
-
-                // ListBox mit den Nachrichten füllen
-                NewsListBox.ItemsSource = newsItems;
+                var news = await NewsService.GetFootballNewsAsync();
+                NewsListBox.ItemsSource = news;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Fehler beim Laden der Nachrichten: {ex.Message}");
             }
         }
+
+        private void NewsListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (NewsListBox.SelectedItem is NewsArticle news)
+            {
+                string message = $"{news.Title}\n\n{news.Description}\n\nVeröffentlicht: {news.PublishedAt:dd.MM.yyyy HH:mm}\n\n{news.Url}";
+                MessageBox.Show(message, "News-Details", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
     }
 
     
