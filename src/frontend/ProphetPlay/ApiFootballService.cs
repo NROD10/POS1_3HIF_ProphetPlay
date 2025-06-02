@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,16 @@ namespace ProphetPlay
     public class ApiFootballService
     {
         private readonly HttpClient _client;
-        private readonly string _apiKey = "e1070428ce875dfd9b406c1e4a1fb7ab";
+        private readonly string apiKey = "e1070428ce875dfd9b406c1e4a1fb7ab";
 
-        // Prompt: wie binde ich eine API in c# ein?
+        public string LeagueName { get; set; }
+
+        public List<string> Leagues { get; set; }
+
         public ApiFootballService()
         {
             _client = new HttpClient();
-            _client.DefaultRequestHeaders.Add("x-apisports-key", _apiKey);
+            _client.DefaultRequestHeaders.Add("x-apisports-key", apiKey);
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -72,54 +76,18 @@ namespace ProphetPlay
             }
         }
 
-        // News
-        public async Task<JObject> GetNewsAsync()
-        {
-            string url = "https://v3.football.api-sports.io/news";
-
-            try
-            {
-                var response = await _client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                string content = await response.Content.ReadAsStringAsync();
-                return JObject.Parse(content);
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"API-Fehler: {ex.Message}");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Unerwarteter Fehler: {ex.Message}");
-                return null;
-            }
-        }
-
-        public async Task<JObject> GetLeaguesAsync()
+        
+        /*
+        public async Task<List<string>> GetLeaguesAsync()
         {
             string url = "https://v3.football.api-sports.io/leagues";
 
-            try
+            using (HttpClient client = new HttpClient())
             {
-                var response = await _client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-
-                string content = await response.Content.ReadAsStringAsync();
-                return JObject.Parse(content);
+                string response = await client.GetStringAsync(url);
+               
             }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine($"API-Fehler: {ex.Message}");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Unerwarteter Fehler: {ex.Message}");
-                return null;
-            }
-        }
+        }*/
 
     }
 }

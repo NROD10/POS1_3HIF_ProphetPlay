@@ -14,6 +14,7 @@ namespace ProphetPlay
         private static readonly string apiKey = "93cc6b28049747b9848ddccc5797890c";
         private static readonly string apiUrl = $"https://newsapi.org/v2/everything?q=fussball&language=de&sortBy=publishedAt&apiKey=93cc6b28049747b9848ddccc5797890c";
 
+
         public static async Task<List<NewsArticle>> GetFootballNewsAsync()
         {
             using (HttpClient client = new HttpClient())

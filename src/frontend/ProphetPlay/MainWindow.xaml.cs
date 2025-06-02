@@ -25,7 +25,8 @@ namespace ProphetPlay
         public MainWindow()
         {
             InitializeComponent();
-            LoadNews(); // Nachrichten laden, wenn das Fenster geöffnet wird
+            LoadNews();
+            LoadLeagues();
         }
 
         private async void LoadNews()
@@ -47,6 +48,18 @@ namespace ProphetPlay
             {
                 string message = $"{news.Title}\n\n{news.Description}\n\nVeröffentlicht: {news.PublishedAt:dd.MM.yyyy HH:mm}\n\n{news.Url}";
                 MessageBox.Show(message, "News-Details", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private async void LoadLeagues()
+        {
+            try
+            {
+
+            }
+            catch
+            {
+
             }
         }
 
