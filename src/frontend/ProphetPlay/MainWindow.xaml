@@ -15,10 +15,20 @@
         <Border Grid.Column="0" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
                 <TextBlock Text="⚽ Fußball-News" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <ListBox x:Name="NewsListBox" Background="#FF383838" Foreground="White" BorderThickness="0" Margin="0" ItemsSource="{Binding NewsItems}">
+                <ListBox x:Name="NewsListBox" Height="636" Background="#FF383838" BorderThickness="0" Foreground="White" MouseDoubleClick="NewsListBox_MouseDoubleClick" Width="290">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                            <Border Margin="0,0,0,10" Padding="10" Background="#FF232323" CornerRadius="6" BorderBrush="#FF4CAF50" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                       FontWeight="Bold"
+                                       FontSize="16"
+                                       Foreground="#FF4CAF50"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="270"/>         
+
+                                </StackPanel>
+                            </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -29,16 +39,18 @@
         <Border Grid.Column="1" Background="#FF252525" Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
                 <TextBlock Text="📡 Liveticker" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <ComboBox Margin="0,0,0,10" Background="#FF383838" Foreground="White">
-                    <ComboBoxItem Content="Champions League"/>
-                    <ComboBoxItem Content="Bundesliga"/>
-                    <ComboBoxItem Content="La Liga"/>
-                </ComboBox>
+                <TextBox x:Name="TextBoxLeaguen" Margin="0,0,0,10" Text="🔍 search ..." Foreground="Gray"/>
                 <Button Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" />
-                <ListBox Margin="10,15,0,0" Background="#FF383838" Foreground="White" BorderThickness="0">
-                    <ListBoxItem Content="Champions League"/>
-                    <ListBoxItem Content="Europa League"/>
-                    <ListBoxItem Content="Österreichische Bundesliga"/>
+                <ListBox x:Name="ListBoxLeaguen" Margin="10,15,0,0" Background="#FF383838" Foreground="White" BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,10" Padding="10" Background="#FF232323" CornerRadius="6" BorderBrush="#FF4CAF50" BorderThickness="1">
+                                <StackPanel>
+                                    <Button Content="{Binding LeagueName}" Width="486" Height="25" Background="Gray" Foreground="White" FontWeight="Bold" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </StackPanel>
         </Border>

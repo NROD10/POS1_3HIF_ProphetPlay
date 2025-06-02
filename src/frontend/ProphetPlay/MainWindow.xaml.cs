@@ -9,6 +9,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Net.Http;
+using System.Text.Json;
+
 
 
 namespace ProphetPlay
@@ -18,34 +22,48 @@ namespace ProphetPlay
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ObservableCollection<string> NewsItems { get; set; } = new ObservableCollection<string>();
-
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = this;
-
-            LoadNewsAsync();
+            LoadNews();
+            LoadLeagues();
         }
 
-        private async void LoadNewsAsync()
+        private async void LoadNews()
         {
-            var api = new ApiFootballService();
-            var newsData = await api.GetNewsAsync();
-
-            if (newsData?["response"] != null)
+            try
             {
-                NewsItems.Clear();
-                foreach (var article in newsData["response"])
-                {
-                    string title = article["title"]?.ToString();
-                    NewsItems.Add(title);
-                }
+                var news = await NewsService.GetFootballNewsAsync();
+                NewsListBox.ItemsSource = news;
             }
-            else
+            catch (Exception ex)
             {
-                NewsItems.Add("⚠️ Keine Nachrichten verfügbar.");
+                MessageBox.Show($"Fehler beim Laden der Nachrichten: {ex.Message}");
             }
         }
+
+        private void NewsListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (NewsListBox.SelectedItem is NewsArticle news)
+            {
+                string message = $"{news.Title}\n\n{news.Description}\n\nVeröffentlicht: {news.PublishedAt:dd.MM.yyyy HH:mm}\n\n{news.Url}";
+                MessageBox.Show(message, "News-Details", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private async void LoadLeagues()
+        {
+            try
+            {
+
+            }
+            catch
+            {
+
+            }
+        }
+
     }
+
+    
 }
