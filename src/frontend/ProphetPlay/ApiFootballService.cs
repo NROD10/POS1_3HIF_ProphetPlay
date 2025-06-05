@@ -10,24 +10,12 @@ using System.Threading.Tasks;
 
 namespace ProphetPlay
 {
-    public class ApiFootballService
+    public static class ApiFootballService
     {
-        private readonly HttpClient _client;
-        private readonly string apiKey = "e1070428ce875dfd9b406c1e4a1fb7ab";
+        private static readonly HttpClient _client;
+        private static readonly string apiKey = "8b47ed9970bf67f6ea16c39df052a40c";
 
-        public string LeagueName { get; set; }
-
-        public List<string> Leagues { get; set; }
-
-        public ApiFootballService()
-        {
-            _client = new HttpClient();
-            _client.DefaultRequestHeaders.Add("x-apisports-key", apiKey);
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
-
-        // Live Spiele
-        public async Task<JObject> GetLiveMatchesAsync()
+        public static async Task<JObject> GetLiveMatchesAsync()
         {
             string url = "https://v3.football.api-sports.io/fixtures?live=all";
 
@@ -52,7 +40,7 @@ namespace ProphetPlay
         }
 
         // Spiel für ein bestimmtes Datum
-        public async Task<JObject> GetMatchesByDateAsync(string date)
+        public static async Task<JObject> GetMatchesByDateAsync(string date)
         {
             string url = $"https://v3.football.api-sports.io/fixtures?date={date}";
 
@@ -76,18 +64,26 @@ namespace ProphetPlay
             }
         }
 
-        
-        /*
-        public async Task<List<string>> GetLeaguesAsync()
+
+
+        public static async Task<List<LeaguesArticle>> GetLeaguesAsync()
         {
-            string url = "https://v3.football.api-sports.io/leagues";
+            string league_url = "https://v3.football.api-sports.io/leagues";
 
             using (HttpClient client = new HttpClient())
             {
-                string response = await client.GetStringAsync(url);
-               
-            }
-        }*/
+                client.DefaultRequestHeaders.Add("x-apisports-key", "8b47ed9970bf67f6ea16c39df052a40c");
 
+                string response = await client.GetStringAsync(league_url);
+                LeaguesApiResponse result = JsonConvert.DeserializeObject<LeaguesApiResponse>(response);
+
+                return result.Response.Select(x => new LeaguesArticle
+                {
+                    LeagueName = x.League.Name,
+                    LogoUrl = x.League.Logo,
+                    CountryName = x.Country.Name
+                }).ToList();
+            }
+        }
     }
 }

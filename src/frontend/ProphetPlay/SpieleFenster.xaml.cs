@@ -15,25 +15,17 @@ using System.Windows.Shapes;
 namespace ProphetPlay
 {
     /// <summary>
-    /// Interaction logic for RegisterWindow.xaml
+    /// Interaction logic for SpieleFenster.xaml
     /// </summary>
-    public partial class RegisterWindow : Window
+    public partial class SpieleFenster : Window
     {
-        public RegisterWindow()
+        private LeaguesArticle _league;
+        public SpieleFenster(LeaguesArticle league)
         {
             InitializeComponent();
+            _league = league;
+            // Nutze _league.LeagueName etc.
         }
 
-        private void ZurueckButton_Click(object sender, RoutedEventArgs e)
-        {
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.Show();
-            this.Close();
-        }
-
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
     }
 }

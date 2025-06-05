@@ -23,9 +23,9 @@
                                     <TextBlock Text="{Binding Title}"
                                        FontWeight="Bold"
                                        FontSize="16"
-                                       Foreground="#FF4CAF50"
+                                       Foreground="White"
                                        TextWrapping="Wrap"
-                                       MaxWidth="270"/>         
+                                       MaxWidth="235"/>         
 
                                 </StackPanel>
                             </Border>
@@ -37,23 +37,49 @@
 
         <!-- TICKER PANEL -->
         <Border Grid.Column="1" Background="#FF252525" Margin="10" Padding="15" CornerRadius="10">
-            <StackPanel>
-                <TextBlock Text="📡 Liveticker" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <TextBox x:Name="TextBoxLeaguen" Margin="0,0,0,10" Text="🔍 search ..." Foreground="Gray"/>
-                <Button Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" />
-                <ListBox x:Name="ListBoxLeaguen" Margin="10,15,0,0" Background="#FF383838" Foreground="White" BorderThickness="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="📡 Liveticker" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+                <TextBox Grid.Row="1" x:Name="TextBoxLeaguen" Margin="0,0,0,10" Text="🔍 search ..." Foreground="Gray"/>
+                <Button Grid.Row="2" Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" Margin="5,5,5,15"/>
+
+                <ListBox Grid.Row="3" x:Name="ListBoxLeaguen"
+                 Margin="0"
+                 Background="#FF383838"
+                 Foreground="White"
+                 BorderThickness="0"
+                 HorizontalContentAlignment="Stretch"
+                 SelectionMode="Single">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="0,0,0,10" Padding="10" Background="#FF232323" CornerRadius="6" BorderBrush="#FF4CAF50" BorderThickness="1">
-                                <StackPanel>
-                                    <Button Content="{Binding LeagueName}" Width="486" Height="25" Background="Gray" Foreground="White" FontWeight="Bold" />
+                            <Button Click="LeagueButton_Click"
+                            Background="#FF232323"
+                            BorderBrush="#FF4CAF50"
+                            BorderThickness="1"
+                            Padding="10"
+                            Margin="0,0,0,10"
+                            Cursor="Hand">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Image Source="{Binding LogoUrl}" Width="30" Height="30" Margin="0,0,10,0"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding LeagueName}" FontWeight="Bold" Foreground="White"/>
+                                        <TextBlock Text="{Binding CountryName}" FontStyle="Italic" Foreground="LightGray"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </Border>
+                            </Button>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-            </StackPanel>
+            </Grid>
         </Border>
+
+
 
         <!-- GRUPPEN PANEL -->
         <Border Grid.Column="2" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">

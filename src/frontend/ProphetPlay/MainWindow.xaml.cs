@@ -55,12 +55,29 @@ namespace ProphetPlay
         {
             try
             {
-
+                var leagues = await ApiFootballService.GetLeaguesAsync();
+                ListBoxLeaguen.ItemsSource = leagues;
             }
-            catch
+            catch(Exception ex)
             {
-
+                MessageBox.Show($"Fehler beim Laden der Leaguen: {ex.Message}");
             }
+        }
+
+        private void LeagueButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Prompt: wie mach ich das, dass das Fenster weiß welche Liga das ist?
+            Button btn = sender as Button;
+            if (btn != null)
+            {
+                LeaguesArticle league = btn.DataContext as LeaguesArticle;
+                if (league != null)
+                {
+                    SpieleFenster fenster = new SpieleFenster(league);
+                    fenster.Show();
+                }
+            }
+
         }
 
     }
