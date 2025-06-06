@@ -1,41 +1,43 @@
+import sqlite3
 import connexion
-from typing import Dict
-from typing import Tuple
-from typing import Union
+from openapi_server.models.login_request import LoginRequest
+from openapi_server.models.register_request import RegisterRequest
+from openapi_server.models.login_response import LoginResponse
 
-from openapi_server.models.login_request import LoginRequest  # noqa: E501
-from openapi_server.models.login_response import LoginResponse  # noqa: E501
-from openapi_server.models.register_request import RegisterRequest  # noqa: E501
-from openapi_server import util
+DB = "database.db"
 
+def init_db():
+    with sqlite3.connect(DB) as conn:
+        c = conn.cursor()
+        c.execute("""
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                benutzername TEXT UNIQUE NOT NULL,
+                passwort TEXT NOT NULL,
+                rolle TEXT NOT NULL
+            )
+        """)
+        conn.commit()
 
-def api_benutzer_login_post(body):  # noqa: E501
-    """Login eines Benutzers
+init_db()
 
-     # noqa: E501
+def api_benutzer_login_post(body: LoginRequest):
+    with sqlite3.connect(DB) as conn:
+        c = conn.cursor()
+        c.execute("SELECT benutzername, rolle FROM users WHERE benutzername=? AND passwort=?",
+                  (body.benutzername, body.passwort))
+        result = c.fetchone()
+        if result:
+            return LoginResponse(benutzername=result[0], rolle=result[1]), 200
+        return "Ungültige Anmeldedaten", 401
 
-    :param login_request: 
-    :type login_request: dict | bytes
-
-    :rtype: Union[LoginResponse, Tuple[LoginResponse, int], Tuple[LoginResponse, int, Dict[str, str]]
-    """
-    login_request = body
-    if connexion.request.is_json:
-        login_request = LoginRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
-
-
-def api_benutzer_register_post(body):  # noqa: E501
-    """Registrierung eines neuen Benutzers
-
-     # noqa: E501
-
-    :param register_request: 
-    :type register_request: dict | bytes
-
-    :rtype: Union[None, Tuple[None, int], Tuple[None, int, Dict[str, str]]
-    """
-    register_request = body
-    if connexion.request.is_json:
-        register_request = RegisterRequest.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+def api_benutzer_register_post(body: RegisterRequest):
+    with sqlite3.connect(DB) as conn:
+        c = conn.cursor()
+        c.execute("SELECT id FROM users WHERE benutzername=?", (body.benutzername,))
+        if c.fetchone():
+            return "Benutzername existiert bereits", 409
+        c.execute("INSERT INTO users (benutzername, passwort, rolle) VALUES (?, ?, ?)",
+                  (body.benutzername, body.passwort, body.rolle))
+        conn.commit()
+        return "Registrierung erfolgreich", 200
