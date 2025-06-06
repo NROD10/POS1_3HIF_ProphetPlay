@@ -66,7 +66,7 @@ namespace ProphetPlay
 
         private void LeagueButton_Click(object sender, RoutedEventArgs e)
         {
-            // Prompt: wie mach ich das, dass das Fenster weiß welche Liga das ist?
+            // Prompt: wie mach ich das, dass das neu erstellte Fenster weiß welche Liga das ist?
             Button btn = sender as Button;
             if (btn != null)
             {
@@ -80,6 +80,30 @@ namespace ProphetPlay
 
         }
 
+
+        // Prompt: wie mach ich das das suchen vom Texfeld verschwindet sobald man auf das Textfeld draufklickt, gibts dafür ein Befehl im xaml?
+        private void TextBoxLeaguen_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxLeaguen.Text == "🔍 search ...")
+            {
+                TextBoxLeaguen.Text = "";
+                TextBoxLeaguen.Foreground = Brushes.Black;
+            }
+        }
+        private void TextBoxLeaguen_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (TextBoxLeaguen.Text == "")
+            {
+                TextBoxLeaguen.Text = "🔍 search ...";
+                TextBoxLeaguen.Foreground = Brushes.Gray;
+            }
+        }
+
+
+        private void Spiele_anzeigen_Button(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 
     

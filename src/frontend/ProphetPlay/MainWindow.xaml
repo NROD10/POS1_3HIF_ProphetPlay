@@ -46,8 +46,8 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="📡 Liveticker" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <TextBox Grid.Row="1" x:Name="TextBoxLeaguen" Margin="0,0,0,10" Text="🔍 search ..." Foreground="Gray"/>
-                <Button Grid.Row="2" Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" Margin="5,5,5,15"/>
+                <TextBox Grid.Row="1" x:Name="TextBoxLeaguen" Margin="0,0,0,10" Text="🔍 search ..." Foreground="Gray" GotFocus="TextBoxLeaguen_GotFocus" LostFocus="TextBoxLeaguen_LostFocus"/>
+                <Button Grid.Row="2" Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" Margin="5,5,5,15" Click="Spiele_anzeigen_Button"/>
 
                 <ListBox Grid.Row="3" x:Name="ListBoxLeaguen"
                  Margin="0"
