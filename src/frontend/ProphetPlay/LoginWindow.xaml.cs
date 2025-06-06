@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -29,6 +30,44 @@ namespace ProphetPlay
             RegisterWindow register = new RegisterWindow();
             register.Show();
             this.Close();
+        }
+
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            var model = new LoginModel
+            {
+                benutzername = UsernameBox.Text,
+                passwort = PasswortBox.Password
+            };
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:8080/");
+                var json = System.Text.Json.JsonSerializer.Serialize(model);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    var response = await client.PostAsync("api/benutzer/login", content);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var loginResponse = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
+
+                        MessageBox.Show($"Willkommen {loginResponse.benutzername} ({loginResponse.rolle})!");
+                        new MainWindow().Show();
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Login fehlgeschlagen.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Fehler: " + ex.Message);
+                }
+            }
         }
     }
 }

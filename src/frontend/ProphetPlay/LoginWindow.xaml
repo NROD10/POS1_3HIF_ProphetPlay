@@ -48,7 +48,8 @@
                     <Button Content="Einloggen"
                             Width="200" Height="35"
                             Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                            HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                            HorizontalAlignment="Center" Margin="0,0,0,10"
+                            Click="LoginButton_Click"/>
 
                     <!-- REGISTRIEREN Button -->
                     <Button Content="Noch kein Konto? Jetzt registrieren"
