@@ -25,6 +25,20 @@ namespace ProphetPlay
             InitializeComponent();
             _league = league;
             // Nutze _league.LeagueName etc.
+            LoadLeagues();
+        }
+
+
+        private async void LoadLeagues()
+        {
+            try
+            {
+                ligen_ueberschrift_textblock.Text = _league.LeagueName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Laden der Leaguen: {ex.Message}");
+            }
         }
 
     }
