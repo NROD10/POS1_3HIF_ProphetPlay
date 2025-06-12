@@ -9,6 +9,21 @@ servers:
     url: http://localhost:8080
 
 paths:
+  /api/benutzer/register:
+    post:
+      summary: Registrierung eines neuen Benutzers
+      operationId: openapi_server.controllers.default_controller.api_benutzer_register_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        "200": { description: Registrierung erfolgreich }
+        "409": { description: Benutzername existiert bereits }
+        "500": { description: Serverfehler }
+
   /api/benutzer/login:
     post:
       summary: Login eines Benutzers
@@ -26,27 +41,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
-        "401":
-          description: Ungültige Anmeldedaten
-
-  /api/benutzer/register:
-    post:
-      summary: Registrierung eines neuen Benutzers
-      operationId: openapi_server.controllers.default_controller.api_benutzer_register_post
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegisterRequest'
-      responses:
-        "200":
-          description: Registrierung erfolgreich
-        "409":
-          description: Benutzername existiert bereits
+        "401": { description: Ungültige Anmeldedaten }
+        "500": { description: Serverfehler }
 
 components:
   schemas:
+    RegisterRequest:
+      type: object
+      required: [benutzername, passwort, role_id]
+      properties:
+        benutzername:
+          type: string
+        passwort:
+          type: string
+        role_id:
+          type: integer
     LoginRequest:
       type: object
       required: [benutzername, passwort]
@@ -55,19 +64,6 @@ components:
           type: string
         passwort:
           type: string
-
-    RegisterRequest:
-      type: object
-      required: [benutzername, passwort, rolle]
-      properties:
-        benutzername:
-          type: string
-        passwort:
-          type: string
-        rolle:
-          type: string
-          enum: [User, Admin]
-
     LoginResponse:
       type: object
       properties:
