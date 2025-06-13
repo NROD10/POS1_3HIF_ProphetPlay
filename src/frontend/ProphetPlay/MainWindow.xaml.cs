@@ -29,6 +29,9 @@ namespace ProphetPlay
             LoadLeagues();
         }
 
+        
+
+
         private async void LoadNews()
         {
             try
@@ -100,9 +103,23 @@ namespace ProphetPlay
         }
 
 
+        private List<LeaguesArticle> alleLigen;
         private void Spiele_anzeigen_Button(object sender, RoutedEventArgs e)
         {
+
+
+            string eingabe = TextBoxLeaguen.Text;
+
+            var liga = alleLigen?.FirstOrDefault(l =>l.LeagueName.Equals(eingabe, StringComparison.OrdinalIgnoreCase));
+
+
             
+            if (liga == null)
+            {
+                SpieleFenster fenster = new SpieleFenster(liga);
+                fenster.Show();
+            }
+
         }
     }
 

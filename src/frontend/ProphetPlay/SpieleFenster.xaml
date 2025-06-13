@@ -8,6 +8,7 @@
         Title="SpieleFenster" Height="800" Width="1280"
         Background="#FF1E1E1E">
     <Grid>
-        
+        <TextBlock x:Name="ligen_ueberschrift_textblock" Text="{Binding LeagueName}" FontSize="50" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" HorizontalAlignment="Center"></TextBlock>
+
     </Grid>
 </Window>
