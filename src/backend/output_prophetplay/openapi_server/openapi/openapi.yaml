@@ -44,6 +44,48 @@ paths:
         "401": { description: Ungültige Anmeldedaten }
         "500": { description: Serverfehler }
 
+  /api/benutzer/liste:
+    get:
+      summary: Liste aller Benutzer (nur Admin)
+      operationId: openapi_server.controllers.default_controller.api_benutzer_liste_get
+      parameters:
+        - name: requester
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Benutzerliste
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        "403": { description: Nicht autorisiert }
+        "500": { description: Serverfehler }
+
+  /api/benutzer/loeschen:
+    delete:
+      summary: Benutzer löschen (nur Admin)
+      operationId: openapi_server.controllers.default_controller.api_benutzer_loeschen_delete
+      parameters:
+        - name: requester
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: target
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200": { description: Benutzer gelöscht }
+        "403": { description: Nicht autorisiert }
+        "500": { description: Serverfehler }
+
 components:
   schemas:
     RegisterRequest:
