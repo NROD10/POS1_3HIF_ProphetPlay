@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProphetPlay
 {
@@ -23,54 +14,59 @@ namespace ProphetPlay
         public RegisterWindow()
         {
             InitializeComponent();
+            // Falls du später dynamisch befüllen willst:
+            // RollenBox.ItemsSource = new[] { "Admin", "User" };
+            // RollenBox.SelectedIndex = 1; // Default "User"
         }
 
         private void ZurueckButton_Click(object sender, RoutedEventArgs e)
         {
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.Show();
+            new LoginWindow().Show();
             this.Close();
         }
 
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
+            // Rolle aus der Combo in die korrekte ID mappen
+            string roleName = ((ComboBoxItem)RollenBox.SelectedItem).Content.ToString();
+            int roleId = roleName == "Admin" ? 1 : 2;
+
             var model = new RegisterModel
             {
                 benutzername = UsernameBox.Text,
                 passwort = PasswortBox.Password,
-                rolle = RollenBox.Text
+                role_id = roleId
             };
 
-            using (HttpClient client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:8080/");
-                var json = System.Text.Json.JsonSerializer.Serialize(model);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+            using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080/") };
+            var json = System.Text.Json.JsonSerializer.Serialize(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                try
+            try
+            {
+                var response = await client.PostAsync("api/benutzer/register", content);
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = await client.PostAsync("api/benutzer/register", content);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show("Registrierung erfolgreich!");
-                        new LoginWindow().Show();
-                        this.Close();
-                    }
-                    else if ((int)response.StatusCode == 409)
-                    {
-                        MessageBox.Show("Benutzername existiert bereits.");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Registrierung fehlgeschlagen.");
-                    }
+                    MessageBox.Show("Registrierung erfolgreich!");
+                    new LoginWindow().Show();
+                    this.Close();
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Fehler: " + ex.Message);
+                    var err = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show(
+                        $"Registrierung fehlgeschlagen ({(int)response.StatusCode}):\n{err}",
+                        "Fehler",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Fehler beim Registrieren:\n{ex.Message}",
+                                "Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
     }
 }
