@@ -7,8 +7,93 @@
         mc:Ignorable="d"
         Title="SpieleFenster" Height="800" Width="1280"
         Background="#FF1E1E1E">
-    <Grid>
-        <TextBlock x:Name="ligen_ueberschrift_textblock" Text="{Binding LeagueName}" FontSize="50" FontWeight="Bold" Foreground="White" Margin="0,0,0,10" HorizontalAlignment="Center"></TextBlock>
 
-    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="20">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Width="1000">
+
+                <!-- Logo und Überschriften -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,20">
+                    <Image x:Name="logo_image" Width="60" Height="60" Margin="0,0,10,0"/>
+                    <StackPanel>
+                        <TextBlock x:Name="ligen_ueberschrift_textblock"
+                                   FontSize="36"
+                                   FontWeight="Bold"
+                                   Foreground="White" />
+                        <TextBlock x:Name="land_ueberschrift_textblock"
+                                   FontSize="18"
+                                   FontStyle="Italic"
+                                   Foreground="LightGray" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Kalender zur Datumsauswahl -->
+                <DatePicker x:Name="Kalender"
+                            SelectedDateChanged="Kalender_SelectedDateChanged"
+                            Margin="0,0,0,20"
+                            FontSize="16" />
+
+                <!-- Livespiele -->
+                <TextBlock Text="🎯 Livespiele"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="LimeGreen"
+                           Margin="0,10" />
+
+                <ListBox x:Name="ListBoxLiveSpiele"
+                         Background="#FF2B2B2B"
+                         Foreground="White"
+                         BorderThickness="0"
+                         Margin="0,0,0,20"
+                         HorizontalContentAlignment="Stretch"
+                         SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LimeGreen" BorderThickness="1" Margin="5" Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Teams}" FontSize="18" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding StartTime}" FontSize="14" Foreground="LightGray" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Spiele am gewählten Datum -->
+                <TextBlock Text="📅 Spiele am gewählten Datum"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Foreground="LightBlue"
+                           Margin="0,10" />
+
+                <ListBox x:Name="ListBoxDatumSpiele"
+                         Background="#FF3A3A3A"
+                         Foreground="White"
+                         BorderThickness="0"
+                         Margin="0,0,0,20"
+                         HorizontalContentAlignment="Stretch"
+                         SelectionMode="Single">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightBlue" BorderThickness="1" Margin="5" Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Teams}" FontSize="18" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding StartTime}" FontSize="14" Foreground="LightGray" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Kein Spiel Hinweis -->
+                <TextBlock x:Name="KeineSpieleTextBlock"
+                           Text="Keine Spiele für das gewählte Datum gefunden."
+                           Foreground="LightGray"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           Visibility="Collapsed"
+                           Margin="0,10" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </Window>
