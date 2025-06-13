@@ -24,6 +24,9 @@ namespace ProphetPlay
 
     public class LeagueInfo
     {
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
         [JsonProperty("name")]
         public string Name { get; set; }
 
