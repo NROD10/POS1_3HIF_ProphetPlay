@@ -50,7 +50,7 @@ namespace ProphetPlay
                 {
                     var response = await client.PostAsync("api/benutzer/login", content);
                     if (response.IsSuccessStatusCode)
-                    {
+                    { 
                         var responseContent = await response.Content.ReadAsStringAsync();
                         var loginResponse = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
 
