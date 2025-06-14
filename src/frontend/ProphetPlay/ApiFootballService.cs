@@ -18,6 +18,7 @@ namespace ProphetPlay
             _client.DefaultRequestHeaders.Add("x-apisports-key", ApiKey);
         }
 
+        // vorhandene Methode...
         public static async Task<List<LeaguesArticle>> GetLeaguesAsync()
         {
             var json = await _client.GetStringAsync("https://v3.football.api-sports.io/leagues");
@@ -30,8 +31,8 @@ namespace ProphetPlay
                 LogoUrl = x.League.Logo,
                 CountryName = x.Country.Name,
                 Season = x.Seasons?.FirstOrDefault(s => s.Current)?.Year
-                              ?? x.Seasons?.Max(s => s.Year)
-                              ?? DateTime.UtcNow.Year
+                          ?? x.Seasons?.Max(s => s.Year)
+                          ?? DateTime.UtcNow.Year
             }).ToList();
         }
 
@@ -44,14 +45,27 @@ namespace ProphetPlay
                          $"?league={leagueId}" +
                          $"&season={season}" +
                          $"&next={next}";
-
             var json = await _client.GetStringAsync(url);
             var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
             return result.Response ?? new List<LiveMatchResponse>();
         }
 
         /// <summary>
-        /// Fallback: Spiele in den nächsten 30 Tagen abrufen.
+        /// Holt die letzten 'last' Spiele einer Liga/Saison (Ergebnisse).
+        /// </summary>
+        public static async Task<List<LiveMatchResponse>> GetPastMatchesAsync(int leagueId, int season, int last = 10)
+        {
+            string url = $"https://v3.football.api-sports.io/fixtures" +
+                         $"?league={leagueId}" +
+                         $"&season={season}" +
+                         $"&last={last}";
+            var json = await _client.GetStringAsync(url);
+            var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
+            return result.Response ?? new List<LiveMatchResponse>();
+        }
+
+        /// <summary>
+        /// Fallback: Spiele in den nächsten 'days' Tagen abrufen.
         /// </summary>
         public static async Task<List<LiveMatchResponse>> GetMatchesByDateRangeAsync(int leagueId, int season, int days = 30)
         {
@@ -63,7 +77,6 @@ namespace ProphetPlay
                          $"&season={season}" +
                          $"&from={from}" +
                          $"&to={to}";
-
             var json = await _client.GetStringAsync(url);
             var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
             return result.Response ?? new List<LiveMatchResponse>();

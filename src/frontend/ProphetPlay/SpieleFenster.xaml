@@ -6,6 +6,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="20">
             <StackPanel HorizontalAlignment="Center" Width="1000">
+
                 <!-- Header -->
                 <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
                     <Image x:Name="logo_image" Width="60" Height="60" Margin="0,0,10,0"/>
@@ -17,9 +18,34 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Spiele (Live + Upcoming) -->
-                <TextBlock Text="🎯 Livespiele &amp; Kommende"
-                           FontSize="24" FontWeight="Bold" Foreground="LimeGreen" Margin="0,10"/>
+                <!-- Vergangene Ergebnisse -->
+                <TextBlock Text="🕑 Vergangene Ergebnisse"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="LightBlue" Margin="0,10"/>
+                <ListBox x:Name="ListBoxPastSpiele"
+                         Background="#FF383838"
+                         Foreground="White"
+                         BorderThickness="0"
+                         Margin="0,0,0,20"
+                         MouseDoubleClick="ListBoxLiveSpiele_MouseDoubleClick">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightBlue" BorderThickness="1" Margin="5" Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding TeamsString}" FontSize="18" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding MatchDateTime}" FontSize="14" Foreground="LightGray"/>
+                                    <TextBlock Text="{Binding DisplayScore}" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Status}" FontSize="12" FontStyle="Italic" Foreground="LightGray"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Livespiele & Kommende -->
+                <TextBlock Text="🎯 Livespiele und Kommende"
+                           FontSize="24" FontWeight="Bold"
+                           Foreground="LimeGreen" Margin="0,10"/>
                 <ListBox x:Name="ListBoxLiveSpiele"
                          Background="#FF2B2B2B"
                          Foreground="White"
@@ -30,8 +56,9 @@
                             <Border BorderBrush="LimeGreen" BorderThickness="1" Margin="5" Padding="10">
                                 <StackPanel>
                                     <TextBlock Text="{Binding TeamsString}" FontSize="18" FontWeight="Bold"/>
-                                    <TextBlock Text="{Binding StartTime}"   FontSize="14" Foreground="LightGray"/>
-                                    <TextBlock Text="{Binding Status}"      FontSize="12" Foreground="LightGray"/>
+                                    <TextBlock Text="{Binding MatchDateTime}" FontSize="14" Foreground="LightGray"/>
+                                    <TextBlock Text="{Binding DisplayScore}" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Status}" FontSize="12" FontStyle="Italic" Foreground="LightGray"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -41,7 +68,8 @@
                 <!-- Kein Spiel Hinweis -->
                 <TextBlock x:Name="KeineSpieleTextBlock"
                            Text="Keine Spiele gefunden."
-                           Foreground="LightGray" FontSize="16"
+                           Foreground="LightGray"
+                           FontSize="16"
                            HorizontalAlignment="Center"
                            Visibility="Collapsed"
                            Margin="0,20"/>

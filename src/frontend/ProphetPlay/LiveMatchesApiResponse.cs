@@ -24,67 +24,50 @@ namespace ProphetPlay
         [JsonProperty("fixture")]
         public Fixture Fixture { get; set; }
 
-        // ✅ Neue Hilfseigenschaften für die Anzeige (optional, brechen nichts)
+        // Anzeige: "Heim vs Auswärts"
+        public string TeamsString =>
+            $"{Teams?.Home?.Name} vs {Teams?.Away?.Name}";
 
-        public string TeamsString => $"{Teams?.Home?.Name} vs {Teams?.Away?.Name}";
-
-        public string StartTime
+        // Datum + Uhrzeit im Format "dd.MM.yyyy HH:mm"
+        public string MatchDateTime
         {
             get
             {
                 if (DateTime.TryParse(Fixture?.Date, out DateTime dt))
-                    return dt.ToLocalTime().ToString("HH:mm");
+                    return dt.ToLocalTime().ToString("dd.MM.yyyy HH:mm");
                 return "-";
             }
         }
 
-        public string Status => Fixture?.Status?.Short;
-    }
+        // Spielstand: echtes Ergebnis, wenn live oder vorbei; sonst "0:0 (bevorstehend)"
+        public string DisplayScore
+        {
+            get
+            {
+                var status = Fixture?.Status?.Short;
+                if (status == "NS" || status == "TBD")
+                    return "0:0 (bevorstehend)";
+                return $"{Goals?.Home ?? 0}:{Goals?.Away ?? 0}";
+            }
+        }
 
-    public class Fixture
-    {
-        [JsonProperty("id")]
-        public int Id { get; set; }
-
-        [JsonProperty("date")]
-        public string Date { get; set; }
-
-        [JsonProperty("status")]
-        public FixtureStatus Status { get; set; }
-    }
-
-    public class FixtureStatus
-    {
-        [JsonProperty("long")]
-        public string Long { get; set; }
-
-        [JsonProperty("short")]
-        public string Short { get; set; }
-
-        [JsonProperty("elapsed")]
-        public int? Elapsed { get; set; }
+        // Kurz-Status (LIVE, FT, NS, etc.)
+        public string Status =>
+            Fixture?.Status?.Short ?? "";
     }
 
     public class League
     {
         [JsonProperty("id")]
         public int Id { get; set; }
-
         [JsonProperty("name")]
         public string Name { get; set; }
-
-        [JsonProperty("logo")]
-        public string Logo { get; set; }
-
-        [JsonProperty("country")]
-        public string Country { get; set; }
     }
 
     public class Teams
     {
         [JsonProperty("home")]
         public Team Home { get; set; }
-
         [JsonProperty("away")]
         public Team Away { get; set; }
     }
@@ -99,8 +82,21 @@ namespace ProphetPlay
     {
         [JsonProperty("home")]
         public int? Home { get; set; }
-
         [JsonProperty("away")]
         public int? Away { get; set; }
+    }
+
+    public class Fixture
+    {
+        [JsonProperty("date")]
+        public string Date { get; set; }
+        [JsonProperty("status")]
+        public FixtureStatus Status { get; set; }
+    }
+
+    public class FixtureStatus
+    {
+        [JsonProperty("short")]
+        public string Short { get; set; }
     }
 }

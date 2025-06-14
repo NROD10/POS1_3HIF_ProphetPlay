@@ -23,27 +23,33 @@ namespace ProphetPlay
 
         private async Task LoadGamesAsync()
         {
-            // 1) versuche next-Abfrage
-            var games = await ApiFootballService.GetUpcomingMatchesAsync(_league.LeagueId, _league.Season, next: 10);
+            // 1) letzte Spiele
+            var past = await ApiFootballService.GetPastMatchesAsync(_league.LeagueId, _league.Season, last: 5);
 
-            // 2) Fallback auf Datum-Range, wenn leer
-            if (games == null || !games.Any())
+            // 2) aktuelle/Kommende Spiele
+            var upcoming = await ApiFootballService.GetUpcomingMatchesAsync(_league.LeagueId, _league.Season, next: 10);
+            if (upcoming == null || !upcoming.Any())
             {
-                games = await ApiFootballService.GetMatchesByDateRangeAsync(_league.LeagueId, _league.Season, days: 30);
+                upcoming = await ApiFootballService.GetMatchesByDateRangeAsync(_league.LeagueId, _league.Season, days: 30);
             }
 
-            ListBoxLiveSpiele.ItemsSource = games;
-            KeineSpieleTextBlock.Visibility = games.Any()
-                ? Visibility.Collapsed
-                : Visibility.Visible;
+            // 3) anzeigen
+            ListBoxPastSpiele.ItemsSource = past;
+            ListBoxLiveSpiele.ItemsSource = upcoming;
+            KeineSpieleTextBlock.Visibility = (past.Any() || upcoming.Any())
+                                              ? Visibility.Collapsed
+                                              : Visibility.Visible;
         }
 
         private void ListBoxLiveSpiele_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (ListBoxLiveSpiele.SelectedItem is LiveMatchResponse match)
+            if ((sender as FrameworkElement)?.DataContext is LiveMatchResponse match)
             {
                 MessageBox.Show(
-                    $"{match.TeamsString}\nZeit: {match.StartTime}\nStatus: {match.Status}",
+                    $"{match.TeamsString}\n" +
+                    $"Datum: {match.MatchDateTime}\n" +
+                    $"Ergebnis: {match.DisplayScore}\n" +
+                    $"Status: {match.Status}",
                     "Spieldetails",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information

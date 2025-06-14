@@ -8,9 +8,6 @@ namespace ProphetPlay
         public string LeagueName { get; set; }
         public string LogoUrl { get; set; }
         public string CountryName { get; set; }
-
-        // Die aktuelle Saison
         public int Season { get; set; }
     }
 }
-
