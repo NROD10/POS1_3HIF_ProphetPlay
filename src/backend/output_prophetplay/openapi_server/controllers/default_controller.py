@@ -99,3 +99,70 @@ def api_benutzer_login_post(body):
     except Exception as e:
         print("Ausnahme bei Login:", e)
         return "Fehler bei Anmeldung", 500
+    
+
+
+def api_benutzer_liste_get():
+    try:
+        requester = request.args.get("requester")
+
+        # Benutzer mit ID = requester abrufen
+        user_url = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
+        user_resp = requests.get(user_url, headers=SUPABASE_HEADERS)
+
+        if user_resp.status_code != 200:
+            return "Fehler beim Abrufen der Anfrageperson", 500
+
+        users = user_resp.json()
+        if not users:
+            return "Benutzer nicht gefunden", 404
+
+        role_id = users[0]["role_id"]
+
+        if role_id != 1:
+            return "Nicht autorisiert", 403
+
+        # Jetzt alle Benutzer abrufen
+        all_users_url = f"{SUPABASE_URL}/rest/v1/users?select=benutzername,role_id"
+        all_users_resp = requests.get(all_users_url, headers=SUPABASE_HEADERS)
+
+        if all_users_resp.status_code != 200:
+            return "Fehler beim Abrufen der Benutzer", 500
+
+        return all_users_resp.json(), 200
+
+    except Exception as e:
+        print("Fehler beim Benutzerlisten-Abruf:", e)
+        return "Serverfehler", 500
+    
+
+def api_benutzer_loeschen_delete():
+    try:
+        requester = request.args.get("requester")
+        target    = request.args.get("target")
+
+        # Prüfen, ob requester Admin ist
+        check_url = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
+        check_resp = requests.get(check_url, headers=SUPABASE_HEADERS)
+        if check_resp.status_code != 200:
+            return "Fehler beim Rollencheck", 500
+
+        check_data = check_resp.json()
+        if not check_data or check_data[0]["role_id"] != 1:
+            return "Nicht autorisiert", 403
+
+        # Benutzer löschen
+        delete_url = f"{SUPABASE_URL}/rest/v1/users?benutzername=eq.{target}"
+        delete_headers = SUPABASE_HEADERS.copy()
+        delete_headers["Prefer"] = "return=minimal"
+
+        delete_resp = requests.delete(delete_url, headers=delete_headers)
+
+        if delete_resp.status_code not in (200, 204):
+            return "Fehler beim Löschen", delete_resp.status_code
+
+        return "Benutzer gelöscht", 200
+
+    except Exception as e:
+        print("Fehler beim Löschen:", e)
+        return "Serverfehler", 500
