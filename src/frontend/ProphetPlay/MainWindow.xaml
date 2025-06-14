@@ -14,19 +14,31 @@
         <!-- NEWS PANEL -->
         <Border Grid.Column="0" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
-                <TextBlock Text="⚽ Fußball-News" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <ListBox x:Name="NewsListBox" Height="636" Background="#FF383838" BorderThickness="0" Foreground="White" MouseDoubleClick="NewsListBox_MouseDoubleClick" Width="290">
+                <TextBlock Text="⚽ Fußball-News"
+                           FontSize="22" FontWeight="Bold" Foreground="White"
+                           Margin="0,0,0,10"/>
+                <ListBox x:Name="NewsListBox"
+                         Height="636"
+                         Background="#FF383838"
+                         BorderThickness="0"
+                         Foreground="White"
+                         MouseDoubleClick="NewsListBox_MouseDoubleClick"
+                         Width="290">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="0,0,0,10" Padding="10" Background="#FF232323" CornerRadius="6" BorderBrush="#FF4CAF50" BorderThickness="1">
+                            <Border Margin="0,0,0,10"
+                                    Padding="10"
+                                    Background="#FF232323"
+                                    CornerRadius="6"
+                                    BorderBrush="#FF4CAF50"
+                                    BorderThickness="1">
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}"
-                                       FontWeight="Bold"
-                                       FontSize="16"
-                                       Foreground="White"
-                                       TextWrapping="Wrap"
-                                       MaxWidth="235"/>         
-
+                                               FontWeight="Bold"
+                                               FontSize="16"
+                                               Foreground="White"
+                                               TextWrapping="Wrap"
+                                               MaxWidth="235"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -45,31 +57,59 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="📡 Liveticker" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
-                <TextBox Grid.Row="1" x:Name="TextBoxLeaguen" Margin="0,0,0,10" Text="🔍 search ..." Foreground="Gray" GotFocus="TextBoxLeaguen_GotFocus" LostFocus="TextBoxLeaguen_LostFocus"/>
-                <Button Grid.Row="2" Content="Spiele anzeigen" Width="160" Height="35" Background="#FF4CAF50" Foreground="White" FontWeight="Bold" Margin="5,5,5,15" Click="Spiele_anzeigen_Button"/>
+                <TextBlock Grid.Row="0"
+                           Text="📡 Liveticker"
+                           FontSize="22" FontWeight="Bold"
+                           Foreground="White"
+                           Margin="0,0,0,10"/>
 
-                <ListBox Grid.Row="3" x:Name="ListBoxLeaguen"
-                 Margin="0"
-                 Background="#FF383838"
-                 Foreground="White"
-                 BorderThickness="0"
-                 HorizontalContentAlignment="Stretch"
-                 SelectionMode="Single">
+                <!-- Suchfeld mit TextChanged -->
+                <TextBox Grid.Row="1"
+                         x:Name="TextBoxLeaguen"
+                         Margin="0,0,0,10"
+                         Text="🔍 search ..."
+                         Foreground="Gray"
+                         GotFocus="TextBoxLeaguen_GotFocus"
+                         LostFocus="TextBoxLeaguen_LostFocus"
+                         TextChanged="TextBoxLeaguen_TextChanged"/>
+
+                <Button Grid.Row="2"
+                        Content="Spiele anzeigen"
+                        Width="160" Height="35"
+                        Background="#FF4CAF50"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        Margin="5,5,5,15"
+                        Click="Spiele_anzeigen_Button"/>
+
+                <ListBox Grid.Row="3"
+                         x:Name="ListBoxLeaguen"
+                         Margin="0"
+                         Background="#FF383838"
+                         Foreground="White"
+                         BorderThickness="0"
+                         HorizontalContentAlignment="Stretch"
+                         SelectionMode="Single">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Button Click="LeagueButton_Click"
-                            Background="#FF232323"
-                            BorderBrush="#FF4CAF50"
-                            BorderThickness="1"
-                            Padding="10"
-                            Margin="0,0,0,10"
-                            Cursor="Hand">
+                                    Background="#FF232323"
+                                    BorderBrush="#FF4CAF50"
+                                    BorderThickness="1"
+                                    Padding="10"
+                                    Margin="0,0,0,10"
+                                    Cursor="Hand">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Image Source="{Binding LogoUrl}" Width="30" Height="30" Margin="0,0,10,0"/>
+                                    <Image Source="{Binding LogoUrl}"
+                                           Width="30" Height="30"
+                                           Margin="0,0,10,0"/>
                                     <StackPanel>
-                                        <TextBlock Text="{Binding LeagueName}" FontWeight="Bold" Foreground="White"/>
-                                        <TextBlock Text="{Binding CountryName}" FontStyle="Italic" Foreground="LightGray"/>
+                                        <TextBlock Text="{Binding LeagueName}"
+                                                   FontWeight="Bold"
+                                                   Foreground="White"/>
+                                        <TextBlock Text="{Binding CountryName}"
+                                                   FontStyle="Italic"
+                                                   Foreground="LightGray"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Button>
@@ -79,38 +119,49 @@
             </Grid>
         </Border>
 
-
-
         <!-- GRUPPEN PANEL -->
         <Border Grid.Column="2" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
-                <TextBlock Text="👥 User" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
+                <TextBlock Text="👥 User"
+                           FontSize="22" FontWeight="Bold"
+                           Foreground="White"
+                           Margin="0,0,0,10"/>
 
                 <!-- Statische Userliste -->
-                <ListBox Background="#FF383838" Foreground="White" BorderThickness="0">
+                <ListBox Background="#FF383838"
+                         Foreground="White"
+                         BorderThickness="0">
                     <ListBoxItem Content="User A"/>
                     <ListBoxItem Content="User B"/>
                 </ListBox>
 
-                <Button Content="Gruppe verwalten" Margin="0,10,0,20" Width="160" Height="35" Background="#FF2196F3" Foreground="White" FontWeight="Bold"/>
+                <Button Content="Gruppe verwalten"
+                        Margin="0,10,0,20"
+                        Width="160" Height="35"
+                        Background="#FF2196F3"
+                        Foreground="White"
+                        FontWeight="Bold"/>
 
-                <!-- Dynamische Benutzerliste (z.B. Admin-only) -->
+                <!-- Dynamische Benutzerliste (Admin-only) -->
                 <StackPanel x:Name="AdminPanel" Visibility="Collapsed">
-                    <TextBlock Text="Alle Benutzer (Admin)" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,5"/>
-
+                    <TextBlock Text="Alle Benutzer (Admin)"
+                               FontSize="18" FontWeight="SemiBold"
+                               Foreground="White"
+                               Margin="0,0,0,5"/>
                     <ItemsControl ItemsSource="{Binding BenutzerListe}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,2">
-                                    <TextBlock Text="{Binding benutzername}" Foreground="White" Width="120"/>
-                                    <Button Content="Löschen" 
-                            Click="LoeschenButton_Click" 
-                            Tag="{Binding benutzername}" 
-                            Background="#FFD32F2F" 
-                            Foreground="White"
-                            Width="70" 
-                            Height="22"
-                            FontSize="12"/>
+                                    <TextBlock Text="{Binding benutzername}"
+                                               Foreground="White"
+                                               Width="120"/>
+                                    <Button Content="Löschen"
+                                            Click="LoeschenButton_Click"
+                                            Tag="{Binding benutzername}"
+                                            Background="#FFD32F2F"
+                                            Foreground="White"
+                                            Width="70" Height="22"
+                                            FontSize="12"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -118,6 +169,5 @@
                 </StackPanel>
             </StackPanel>
         </Border>
-
     </Grid>
 </Window>
