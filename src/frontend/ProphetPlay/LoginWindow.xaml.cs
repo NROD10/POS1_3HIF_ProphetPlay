@@ -53,10 +53,11 @@ namespace ProphetPlay
                     { 
                         var responseContent = await response.Content.ReadAsStringAsync();
                         var loginResponse = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
-
                         MessageBox.Show($"Willkommen {loginResponse.benutzername} ({loginResponse.rolle})!");
-                        new MainWindow().Show();
+
+                        new MainWindow(loginResponse.benutzername, loginResponse.rolle).Show();
                         this.Close();
+
                     }
                     else
                     {
