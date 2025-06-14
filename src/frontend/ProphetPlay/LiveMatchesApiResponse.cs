@@ -54,6 +54,9 @@ namespace ProphetPlay
         // Kurz-Status (LIVE, FT, NS, etc.)
         public string Status =>
             Fixture?.Status?.Short ?? "";
+
+        // Wichtige ID für Detail-Abfrage
+        public int FixtureId => Fixture?.Id ?? 0;
     }
 
     public class League
@@ -88,6 +91,9 @@ namespace ProphetPlay
 
     public class Fixture
     {
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
         [JsonProperty("date")]
         public string Date { get; set; }
         [JsonProperty("status")]

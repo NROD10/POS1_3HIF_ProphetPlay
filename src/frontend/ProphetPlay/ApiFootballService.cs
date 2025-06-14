@@ -81,5 +81,16 @@ namespace ProphetPlay
             var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
             return result.Response ?? new List<LiveMatchResponse>();
         }
+
+        /// <summary>
+        /// Holt alle Events (Tore, Karten, Wechsel…) zu einem Fixture
+        /// </summary>
+        public static async Task<List<FixtureEvent>> GetFixtureEventsAsync(int fixtureId)
+        {
+            string url = $"https://v3.football.api-sports.io/fixtures/events?fixture={fixtureId}";
+            var json = await _client.GetStringAsync(url);
+            var wrapper = JsonConvert.DeserializeObject<FixtureEventsApiResponse>(json);
+            return wrapper.Response ?? new List<FixtureEvent>();
+        }
     }
 }

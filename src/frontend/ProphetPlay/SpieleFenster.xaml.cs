@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace ProphetPlay
@@ -41,19 +42,13 @@ namespace ProphetPlay
                                               : Visibility.Visible;
         }
 
-        private void ListBoxLiveSpiele_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        // Gemeinsamer Handler für Double-Click auf beide ListBoxes
+        private void ListBoxGame_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as FrameworkElement)?.DataContext is LiveMatchResponse match)
+            if ((sender as System.Windows.Controls.ListBox)?.SelectedItem is LiveMatchResponse match)
             {
-                MessageBox.Show(
-                    $"{match.TeamsString}\n" +
-                    $"Datum: {match.MatchDateTime}\n" +
-                    $"Ergebnis: {match.DisplayScore}\n" +
-                    $"Status: {match.Status}",
-                    "Spieldetails",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
-                );
+                var detailFenster = new SpielDetailsWindow(match);
+                detailFenster.Show();
             }
         }
     }
