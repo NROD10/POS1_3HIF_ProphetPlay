@@ -86,12 +86,38 @@
             <StackPanel>
                 <TextBlock Text="👥 User" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,0,0,10"/>
 
+                <!-- Statische Userliste -->
                 <ListBox Background="#FF383838" Foreground="White" BorderThickness="0">
                     <ListBoxItem Content="User A"/>
                     <ListBoxItem Content="User B"/>
                 </ListBox>
-                <Button Content="Gruppe verwalten" Margin="0,10,0,0" Width="160" Height="35" Background="#FF2196F3" Foreground="White" FontWeight="Bold"/>
+
+                <Button Content="Gruppe verwalten" Margin="0,10,0,20" Width="160" Height="35" Background="#FF2196F3" Foreground="White" FontWeight="Bold"/>
+
+                <!-- Dynamische Benutzerliste (z.B. Admin-only) -->
+                <StackPanel x:Name="AdminPanel" Visibility="Collapsed">
+                    <TextBlock Text="Alle Benutzer (Admin)" FontSize="18" FontWeight="SemiBold" Foreground="White" Margin="0,0,0,5"/>
+
+                    <ItemsControl ItemsSource="{Binding BenutzerListe}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                    <TextBlock Text="{Binding benutzername}" Foreground="White" Width="120"/>
+                                    <Button Content="Löschen" 
+                            Click="LoeschenButton_Click" 
+                            Tag="{Binding benutzername}" 
+                            Background="#FFD32F2F" 
+                            Foreground="White"
+                            Width="70" 
+                            Height="22"
+                            FontSize="12"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </StackPanel>
         </Border>
+
     </Grid>
 </Window>

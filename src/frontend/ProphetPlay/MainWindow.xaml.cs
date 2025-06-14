@@ -22,14 +22,79 @@ namespace ProphetPlay
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public string AktuellerBenutzername { get; set; }
+        public string AktuelleRolle { get; set; }
+
+        public ObservableCollection<LoginResponse> BenutzerListe { get; set; } = new();
+
+        public MainWindow(string benutzername, string rolle)
         {
             InitializeComponent();
+            AktuellerBenutzername = benutzername;
+            AktuelleRolle = rolle;
+
+            this.DataContext = this;
+
             LoadNews();
             LoadLeagues();
+
+            if (AktuelleRolle == "Admin")
+            {
+                AdminPanel.Visibility = Visibility.Visible;
+                _ = LadeBenutzerListeAsync(AktuellerBenutzername);
+            }
+            else
+            {
+                AdminPanel.Visibility = Visibility.Collapsed;
+            }
+
         }
 
-        
+
+        public async Task LadeBenutzerListeAsync(string requester)
+        {
+            using HttpClient client = new();
+            client.BaseAddress = new Uri("http://localhost:8080");
+
+            var response = await client.GetAsync($"/api/benutzer/liste?requester={requester}");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var users = JsonSerializer.Deserialize<List<LoginResponse>>(json);
+                BenutzerListe.Clear();
+                foreach (var user in users)
+                {
+                    BenutzerListe.Add(user);
+                }
+            }
+            else
+            {
+                MessageBox.Show($"Fehler beim Laden: {response.StatusCode}");
+            }
+        }
+
+        private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.Tag is string targetBenutzer)
+            {
+                string requester = this.AktuellerBenutzername; // Eigene Property oder Login-Session
+
+                using HttpClient client = new();
+                client.BaseAddress = new Uri("http://localhost:8080");
+
+                var response = await client.DeleteAsync($"/api/benutzer/loeschen?requester={requester}&target={targetBenutzer}");
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Benutzer gelöscht");
+                    await LadeBenutzerListeAsync(requester); // Liste neu laden
+                }
+                else
+                {
+                    MessageBox.Show($"Fehler beim Löschen: {response.StatusCode}");
+                }
+            }
+        }
+
 
 
         private async void LoadNews()
