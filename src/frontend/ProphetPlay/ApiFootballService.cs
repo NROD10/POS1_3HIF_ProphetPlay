@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProphetPlay
@@ -13,76 +10,63 @@ namespace ProphetPlay
     public static class ApiFootballService
     {
         private static readonly HttpClient _client;
-        private static readonly string apiKey = "8b47ed9970bf67f6ea16c39df052a40c";
+        private const string ApiKey = "47b2ec2efa506d41c568e5858f9540ea";
 
-        
-
+        static ApiFootballService()
+        {
+            _client = new HttpClient();
+            _client.DefaultRequestHeaders.Add("x-apisports-key", ApiKey);
+        }
 
         public static async Task<List<LeaguesArticle>> GetLeaguesAsync()
         {
-            string league_url = "https://v3.football.api-sports.io/leagues";
+            var json = await _client.GetStringAsync("https://v3.football.api-sports.io/leagues");
+            var result = JsonConvert.DeserializeObject<LeaguesApiResponse>(json);
 
-            using (HttpClient client = new HttpClient())
+            return result.Response.Select(x => new LeaguesArticle
             {
-                client.DefaultRequestHeaders.Add("x-apisports-key", "8b47ed9970bf67f6ea16c39df052a40c");
-
-                string response = await client.GetStringAsync(league_url);
-                LeaguesApiResponse result = JsonConvert.DeserializeObject<LeaguesApiResponse>(response);
-
-                return result.Response.Select(x => new LeaguesArticle
-                {
-                    LeagueId = x.League.Id,
-                    LeagueName = x.League.Name,
-                    LogoUrl = x.League.Logo,
-                    CountryName = x.Country.Name
-                }).ToList();
-            }
+                LeagueId = x.League.Id,
+                LeagueName = x.League.Name,
+                LogoUrl = x.League.Logo,
+                CountryName = x.Country.Name,
+                Season = x.Seasons?.FirstOrDefault(s => s.Current)?.Year
+                              ?? x.Seasons?.Max(s => s.Year)
+                              ?? DateTime.UtcNow.Year
+            }).ToList();
         }
 
-
-
-        public static async Task<List<string>> GetLiveMatchesAsync(int leagueId)
+        /// <summary>
+        /// Holt die nächsten 'next' Spiele einer Liga/Saison (Live oder anstehend).
+        /// </summary>
+        public static async Task<List<LiveMatchResponse>> GetUpcomingMatchesAsync(int leagueId, int season, int next = 10)
         {
-            string live_url = "https://v3.football.api-sports.io/fixtures?live=all";
+            string url = $"https://v3.football.api-sports.io/fixtures" +
+                         $"?league={leagueId}" +
+                         $"&season={season}" +
+                         $"&next={next}";
 
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Add("x-apisports-key", "8b47ed9970bf67f6ea16c39df052a40c");
-
-                string response = await client.GetStringAsync(live_url);
-                LiveMatchesApiResponse result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(response);
-
-                return result.Response
-                            .Where(match => match.League?.Id == leagueId)
-                            .Select(match => $"{match.Teams.Home.Name} vs {match.Teams.Away.Name}  : {match.Goals.Home ?? 0} - {match.Goals.Away ?? 0}")
-                            .ToList();
-
-
-            }
+            var json = await _client.GetStringAsync(url);
+            var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
+            return result.Response ?? new List<LiveMatchResponse>();
         }
 
-        // Spiel für ein bestimmtes Datum
-        public static async Task<List<LiveMatchResponse>> GetMatchesByDateAsync(string date)
+        /// <summary>
+        /// Fallback: Spiele in den nächsten 30 Tagen abrufen.
+        /// </summary>
+        public static async Task<List<LiveMatchResponse>> GetMatchesByDateRangeAsync(int leagueId, int season, int days = 30)
         {
-            string url = $"https://v3.football.api-sports.io/fixtures?date={date}";
-            try
-            {
-                var response = await _client.GetAsync(url);
-                response.EnsureSuccessStatusCode();
+            var from = DateTime.UtcNow.ToString("yyyy-MM-dd");
+            var to = DateTime.UtcNow.AddDays(days).ToString("yyyy-MM-dd");
 
-                string content = await response.Content.ReadAsStringAsync();
+            string url = $"https://v3.football.api-sports.io/fixtures" +
+                         $"?league={leagueId}" +
+                         $"&season={season}" +
+                         $"&from={from}" +
+                         $"&to={to}";
 
-                var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(content);
-                return result?.Response;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler: {ex.Message}");
-                return new List<LiveMatchResponse>();
-            }
+            var json = await _client.GetStringAsync(url);
+            var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
+            return result.Response ?? new List<LiveMatchResponse>();
         }
-
-
-
     }
 }

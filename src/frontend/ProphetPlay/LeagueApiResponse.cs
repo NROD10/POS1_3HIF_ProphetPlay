@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProphetPlay
 {
@@ -20,6 +16,10 @@ namespace ProphetPlay
 
         [JsonProperty("country")]
         public CountryInfo Country { get; set; }
+
+        // NEU: die Saison-Infos
+        [JsonProperty("seasons")]
+        public List<SeasonInfo> Seasons { get; set; }
     }
 
     public class LeagueInfo
@@ -40,4 +40,13 @@ namespace ProphetPlay
         public string Name { get; set; }
     }
 
+    // NEU: Struktur für eine Saison
+    public class SeasonInfo
+    {
+        [JsonProperty("year")]
+        public int Year { get; set; }
+
+        [JsonProperty("current")]
+        public bool Current { get; set; }
+    }
 }

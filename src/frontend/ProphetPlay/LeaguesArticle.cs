@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProphetPlay
 {
@@ -12,5 +8,9 @@ namespace ProphetPlay
         public string LeagueName { get; set; }
         public string LogoUrl { get; set; }
         public string CountryName { get; set; }
+
+        // Die aktuelle Saison
+        public int Season { get; set; }
     }
 }
+
