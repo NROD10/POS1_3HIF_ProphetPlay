@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace ProphetPlay
 {
@@ -150,6 +152,7 @@ namespace ProphetPlay
 
         private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
         {
+<<<<<<< HEAD
             if (!(sender is Button btn) || !(btn.Tag is string targetBenutzer))
                 return;
 
@@ -193,5 +196,39 @@ namespace ProphetPlay
             }
         }
 
+=======
+            if (sender is Button btn && btn.Tag is string targetBenutzer)
+            {
+                string requester = this.AktuellerBenutzername;
+                using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080") };
+
+                try
+                {
+                    var response = await client.DeleteAsync(
+                        $"/api/benutzer/loeschen?requester={requester}&target={targetBenutzer}"
+                    );
+
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("✅ Benutzer gelöscht");
+                        await LadeBenutzerListeAsync(requester);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"❌ Fehler: {response.StatusCode}\n{content}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Fehler: " + ex.Message);
+                }
+            }
+        }
+
+
+
+>>>>>>> c535f5bfb05b85798ff6c67e1a08b20bfa7765f3
     }
 }
