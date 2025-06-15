@@ -5,26 +5,63 @@
         Background="#FF1E1E1E" WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <StackPanel>
+            <!-- Titel mit Teams -->
             <TextBlock x:Name="TeamsHeader"
-                       FontSize="20" FontWeight="Bold"
-                       Foreground="White" Margin="0,0,0,10"/>
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       Margin="0,0,0,10"/>
+
+            <!-- Zeitpunkt -->
             <TextBlock x:Name="TimeHeader"
-                       FontSize="14" Foreground="LightGray"
+                       FontSize="14"
+                       Foreground="LightGray"
                        Margin="0,0,0,20"/>
-            <TextBlock Text="📋 Ereignisse" 
-                       FontSize="16" FontWeight="Bold"
-                       Foreground="White" Margin="0,0,0,5"/>
+
+            <!-- Abschnittsüberschrift -->
+            <TextBlock Text="📋 Ereignisse"
+                       FontSize="16"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       Margin="0,0,0,5"/>
+
+            <!-- Liste der Ereignisse -->
             <ListBox x:Name="EventsList"
-                     Background="#FF2A2A2A" Foreground="White"
-                     BorderThickness="0" Height="400">
+                     Background="#FF2A2A2A"
+                     Foreground="White"
+                     BorderThickness="0"
+                     Height="400">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="#FF4CAF50" BorderThickness="1" Padding="5" Margin="0,0,0,5">
+                        <Border BorderBrush="#FF4CAF50"
+                                BorderThickness="1"
+                                Padding="5"
+                                Margin="0,0,0,5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Time.Elapsed}" Width="30"/>
-                                <TextBlock Text="{Binding Type}" Width="60"/>
-                                <TextBlock Text="{Binding Player.Name}" FontWeight="Bold" Width="120"/>
-                                <TextBlock Text="{Binding Detail}" />
+                                <!-- Minute -->
+                                <TextBlock Text="{Binding Time.Elapsed}"
+                                           Width="30"/>
+
+                                <!-- Team, das das Ereignis ausgelöst hat -->
+                                <TextBlock Text="{Binding Team.Name}"
+                                           FontStyle="Italic"
+                                           Width="80"
+                                           Margin="5,0"/>
+
+                                <!-- Typ (Goal, Card…) -->
+                                <TextBlock Text="{Binding Type}"
+                                           Width="60"
+                                           Margin="5,0"/>
+
+                                <!-- Spielername -->
+                                <TextBlock Text="{Binding Player.Name}"
+                                           FontWeight="Bold"
+                                           Width="120"
+                                           Margin="5,0"/>
+
+                                <!-- Detail (z.B. Regular Goal, Yellow Card) -->
+                                <TextBlock Text="{Binding Detail}"
+                                           Margin="5,0"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>

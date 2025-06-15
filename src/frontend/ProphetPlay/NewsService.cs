@@ -9,7 +9,7 @@ namespace ProphetPlay
 {
     public static class NewsService
     {
-        static readonly string apiKey = "93cc6b28049747b9848ddccc5797890c";
+         static readonly string apiKey = "93cc6b28049747b9848ddccc5797890c";
         private static readonly string apiUrl = $"https://newsapi.org/v2/everything?q=fussball&language=de&sortBy=publishedAt&apiKey={apiKey}";
 
         public static async Task<List<NewsArticle>> GetFootballNewsAsync()
@@ -41,8 +41,6 @@ namespace ProphetPlay
                     Debug.WriteLine("News API Fehler: " + ex.Message);
                     throw; // Weiterwerfen an MainWindow
                 }
-
-                // jaja
             }
         }
     }
