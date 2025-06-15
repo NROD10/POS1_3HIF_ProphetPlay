@@ -144,10 +144,7 @@ namespace ProphetPlay
             }
         }
 
-        private void Spiele_anzeigen_Button(object sender, RoutedEventArgs e)
-        {
-            // bleibt unverändert oder kann ähnliche Logik nutzen...
-        }
+        
 
         private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
         {
