@@ -13,14 +13,21 @@ namespace ProphetPlay
     {
         [JsonProperty("time")]
         public TimeInfo Time { get; set; }
+
         [JsonProperty("team")]
         public TeamInfo Team { get; set; }
+
         [JsonProperty("player")]
         public PlayerInfo Player { get; set; }
+
         [JsonProperty("detail")]
         public string Detail { get; set; }    // z.B. "Regular Goal", "Yellow Card"
+
         [JsonProperty("type")]
         public string Type { get; set; }      // "Goal", "Card", …
+
+        // ⬇︎ Hilfs‐Property, um direkt den Teamnamen zu binden
+        public string TeamName => Team?.Name ?? "";
     }
 
     public class TimeInfo
