@@ -9,25 +9,7 @@ namespace ProphetPlay
 {
     public static class NewsService
     {
-<<<<<<< HEAD
-        // Deinen API-Key hier eintragen
-        private static readonly string apiKey = "93cc6b28049747b9848ddccc5797890c";
-
-        // Top-Headlines aus der Sport-Kategorie in Deutschland
-        private static readonly string apiUrl =
-            $"https://newsapi.org/v2/everything?q=fussball&language=de&sortBy=publishedAt&apiKey=93cc6b28049747b9848ddccc5797890c";
-
-        public static async Task<List<NewsArticle>> GetFootballNewsAsync()
-        {
-            using var client = new HttpClient();
-            var response = await client.GetAsync(apiUrl);
-            response.EnsureSuccessStatusCode();  // wirft, wenn Status != 2xx
-
-            var json = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<NewsApiResponse>(json);
-            return result?.Articles ?? new List<NewsArticle>();
-=======
-        private static readonly string apiKey = "93cc6b28049747b9848ddccc5797890c";
+        static readonly string apiKey = "93cc6b28049747b9848ddccc5797890c";
         private static readonly string apiUrl = $"https://newsapi.org/v2/everything?q=fussball&language=de&sortBy=publishedAt&apiKey={apiKey}";
 
         public static async Task<List<NewsArticle>> GetFootballNewsAsync()
@@ -60,7 +42,6 @@ namespace ProphetPlay
                     throw; // Weiterwerfen an MainWindow
                 }
             }
->>>>>>> c535f5bfb05b85798ff6c67e1a08b20bfa7765f3
         }
     }
 
