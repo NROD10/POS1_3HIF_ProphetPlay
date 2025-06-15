@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
@@ -20,6 +21,16 @@ namespace ProphetPlay
             logo_image.Source = new BitmapImage(new Uri(league.LogoUrl));
 
             Loaded += async (_, __) => await LoadGamesAsync();
+        }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+            if (scrollViewer != null)
+            {
+                scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
+                e.Handled = true;
+            }
         }
 
         private async Task LoadGamesAsync()
