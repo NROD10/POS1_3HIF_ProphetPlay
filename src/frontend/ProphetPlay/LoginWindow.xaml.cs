@@ -6,34 +6,34 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ProphetPlay
 {
     /// <summary>
-    /// Interaction logic for LoginWindow.xaml
+    /// Login-Fenster – Wird als erstes angezeigt beim Programmstart.
     /// </summary>
     public partial class LoginWindow : Window
     {
+        // Konstruktor → Fenster initialisieren
         public LoginWindow()
         {
             InitializeComponent();
         }
 
+        // Klick auf "Registrieren"-Button
         private void Button_Registrieren_Click(object sender, RoutedEventArgs e)
         {
+            // Neues Fenster zum Registrieren öffnen
             RegisterWindow register = new RegisterWindow();
             register.Show();
-            this.Close();
+            this.Close(); // aktuelles Fenster schließen
         }
 
+        // Klick auf "Einloggen"-Button
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            // Anmeldedaten aus Eingabefeldern lesen
             var model = new LoginModel
             {
                 benutzername = UsernameBox.Text,
@@ -42,32 +42,40 @@ namespace ProphetPlay
 
             using (HttpClient client = new HttpClient())
             {
+                // API-Adresse setzen (Backend läuft lokal)
                 client.BaseAddress = new Uri("http://localhost:8080/");
+
+                // Objekt in JSON umwandeln
                 var json = System.Text.Json.JsonSerializer.Serialize(model);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 try
                 {
+                    // Login-Anfrage an das Backend senden
                     var response = await client.PostAsync("api/benutzer/login", content);
+
+                    // Wenn erfolgreich → Benutzer begrüßen
                     if (response.IsSuccessStatusCode)
-                    { 
+                    {
                         var responseContent = await response.Content.ReadAsStringAsync();
+
+                        // Antwort auslesen (JSON → Objekt)
                         var loginResponse = System.Text.Json.JsonSerializer.Deserialize<LoginResponse>(responseContent);
+
                         MessageBox.Show($"Willkommen {loginResponse.benutzername} ({loginResponse.rolle})!");
 
+                        // Hauptfenster öffnen mit Benutzer- und Rollendaten
                         new MainWindow(loginResponse.benutzername, loginResponse.rolle).Show();
-                        this.Close();
-                        // jaja
-
+                        this.Close(); // Loginfenster schließen
                     }
                     else
                     {
-                        MessageBox.Show("Login fehlgeschlagen.");
+                        MessageBox.Show("Login fehlgeschlagen."); // falsche Daten
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Fehler: " + ex.Message);
+                    MessageBox.Show("Fehler: " + ex.Message); // z.B. kein Server läuft
                 }
             }
         }
