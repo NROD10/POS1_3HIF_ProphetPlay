@@ -25,6 +25,8 @@ namespace ProphetPlay
             this.Close();
         }
 
+        // jaja
+
         private async void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             // Rolle aus der Combo in die korrekte ID mappen

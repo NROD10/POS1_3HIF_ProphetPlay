@@ -49,6 +49,7 @@ namespace ProphetPlay
             {
                 var detailFenster = new SpielDetailsWindow(match);
                 detailFenster.Show();
+                // jaja
             }
         }
     }

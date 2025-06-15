@@ -23,6 +23,7 @@ namespace ProphetPlay
             // Events laden
             var events = await ApiFootballService.GetFixtureEventsAsync(_match.FixtureId);
             EventsList.ItemsSource = events;
+            // jaja
         }
     }
 }

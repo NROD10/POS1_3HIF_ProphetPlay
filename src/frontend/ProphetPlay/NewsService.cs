@@ -41,6 +41,8 @@ namespace ProphetPlay
                     Debug.WriteLine("News API Fehler: " + ex.Message);
                     throw; // Weiterwerfen an MainWindow
                 }
+
+                // jaja
             }
         }
     }

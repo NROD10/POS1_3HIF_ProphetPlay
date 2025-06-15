@@ -10,5 +10,6 @@ namespace ProphetPlay
     {
         public string benutzername { get; set; }
         public string rolle { get; set; }
+        // jaja
     }
 }

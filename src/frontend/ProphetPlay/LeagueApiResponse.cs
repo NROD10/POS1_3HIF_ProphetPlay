@@ -39,6 +39,8 @@ namespace ProphetPlay
         public string Name { get; set; }
     }
 
+    // jaja
+
     public class SeasonInfo
     {
         [JsonProperty("year")]

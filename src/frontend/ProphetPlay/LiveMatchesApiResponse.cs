@@ -88,7 +88,7 @@ namespace ProphetPlay
         [JsonProperty("away")]
         public int? Away { get; set; }
     }
-
+    // jaja
     public class Fixture
     {
         [JsonProperty("id")]

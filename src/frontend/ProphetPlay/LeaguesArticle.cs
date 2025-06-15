@@ -9,5 +9,7 @@ namespace ProphetPlay
         public string LogoUrl { get; set; }
         public string CountryName { get; set; }
         public int Season { get; set; }
+
+        // jaja
     }
 }

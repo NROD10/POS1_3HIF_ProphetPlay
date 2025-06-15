@@ -57,6 +57,7 @@ namespace ProphetPlay
 
                         new MainWindow(loginResponse.benutzername, loginResponse.rolle).Show();
                         this.Close();
+                        // jaja
 
                     }
                     else

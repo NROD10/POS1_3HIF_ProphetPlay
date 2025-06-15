@@ -7,5 +7,6 @@ namespace ProphetPlay
     {
         [JsonProperty("articles")]
         public List<NewsArticle> Articles { get; set; }
+        // jaja
     }
 }
