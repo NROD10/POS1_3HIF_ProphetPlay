@@ -17,6 +17,7 @@ namespace ProphetPlay
         public string AktuelleRolle { get; set; }
         public ObservableCollection<LoginResponse> BenutzerListe { get; set; } = new();
 
+        // alle Ligen, gefilterte Ligen
         private List<LeaguesArticle> alleLigen = new();
         private ObservableCollection<LeaguesArticle> gefilterteLigen = new();
 
@@ -112,7 +113,7 @@ namespace ProphetPlay
             {
                 TextBoxLeaguen.Text = "🔍 search ...";
                 TextBoxLeaguen.Foreground = Brushes.Gray;
-                // Wieder alle anzeigen
+                // alle Ligen wiederherstellen
                 gefilterteLigen.Clear();
                 foreach (var l in alleLigen) gefilterteLigen.Add(l);
             }
@@ -120,7 +121,7 @@ namespace ProphetPlay
 
         private void TextBoxLeaguen_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Wenn Placeholder, nichts tun
+            // Placeholder ignorieren
             if (TextBoxLeaguen.Foreground == Brushes.Gray) return;
 
             var query = TextBoxLeaguen.Text.Trim();
@@ -144,12 +145,53 @@ namespace ProphetPlay
 
         private void Spiele_anzeigen_Button(object sender, RoutedEventArgs e)
         {
-            // bleibt unverändert oder kann ähnliche Logik nutzen...
+            // Deine bestehende Logik hier…
         }
 
-        private void LoeschenButton_Click(object sender, RoutedEventArgs e)
+        private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
         {
-            // bereits implementiert
+            if (!(sender is Button btn) || !(btn.Tag is string targetBenutzer))
+                return;
+
+            var confirm = MessageBox.Show(
+                $"Willst du '{targetBenutzer}' wirklich löschen?",
+                "Löschen bestätigen",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning
+            );
+            if (confirm != MessageBoxResult.Yes) return;
+
+            try
+            {
+                using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080") };
+                // Baue deine DELETE-Request manuell, um Header setzen zu können
+                var request = new HttpRequestMessage(HttpMethod.Delete,
+                    $"/api/benutzer/loeschen?requester={AktuellerBenutzername}&target={targetBenutzer}"
+                );
+                request.Headers.Add("Prefer", "return=minimal");
+
+                var response = await client.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Benutzer erfolgreich gelöscht.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+                    await LadeBenutzerListeAsync(AktuellerBenutzername);
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    MessageBox.Show("Nicht autorisiert.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                else
+                {
+                    var err = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show($"Fehler: {response.StatusCode}\n{err}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ausnahme beim Löschen: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
     }
 }
