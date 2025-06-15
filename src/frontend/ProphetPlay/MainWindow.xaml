@@ -3,162 +3,186 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ProphetPlay – Liveticker" 
         Width="1280" Height="800"
-        Background="#FF1E1E1E" WindowStartupLocation="CenterScreen">
+        Background="#FF1E1E1E"
+        WindowStartupLocation="CenterScreen">
+
     <Grid Margin="20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2.2*" />
-            <ColumnDefinition Width="3.6*" />
-            <ColumnDefinition Width="2.2*" />
-        </Grid.ColumnDefinitions>
+        <!-- Zwei Zeilen: Hauptinhalt + Button unten -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-        <!-- NEWS PANEL -->
-        <Border Grid.Column="0" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
-            <StackPanel>
-                <TextBlock Text="⚽ Fußball-News"
-                           FontSize="22" FontWeight="Bold" Foreground="White"
-                           Margin="0,0,0,10"/>
-                <ListBox x:Name="NewsListBox"
-                         Height="636"
-                         Background="#FF383838"
-                         BorderThickness="0"
-                         Foreground="White"
-                         MouseDoubleClick="NewsListBox_MouseDoubleClick"
-                         Width="290">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="0,0,0,10"
-                                    Padding="10"
-                                    Background="#FF232323"
-                                    CornerRadius="6"
-                                    BorderBrush="#FF4CAF50"
-                                    BorderThickness="1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Title}"
-                                               FontWeight="Bold"
-                                               FontSize="16"
-                                               Foreground="White"
-                                               TextWrapping="Wrap"
-                                               MaxWidth="235"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
-        </Border>
+        <!-- Hauptinhalt -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.2*" />
+                <ColumnDefinition Width="3.6*" />
+                <ColumnDefinition Width="2.2*" />
+            </Grid.ColumnDefinitions>
 
-        <!-- TICKER PANEL -->
-        <Border Grid.Column="1" Background="#FF252525" Margin="10" Padding="15" CornerRadius="10">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           Text="📡 Liveticker"
-                           FontSize="22" FontWeight="Bold"
-                           Foreground="White"
-                           Margin="0,0,0,10"/>
-
-                <!-- Suchfeld mit TextChanged -->
-                <TextBox Grid.Row="1"
-                         x:Name="TextBoxLeaguen"
-                         Margin="0,0,0,10"
-                         Text="🔍 search ..."
-                         Foreground="Gray"
-                         GotFocus="TextBoxLeaguen_GotFocus"
-                         LostFocus="TextBoxLeaguen_LostFocus"
-                         TextChanged="TextBoxLeaguen_TextChanged"/>
-
-                
-                <ListBox Grid.Row="3"
-                         x:Name="ListBoxLeaguen"
-                         Margin="0"
-                         Background="#FF383838"
-                         Foreground="White"
-                         BorderThickness="0"
-                         HorizontalContentAlignment="Stretch"
-                         SelectionMode="Single">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Button Click="LeagueButton_Click"
-                                    Background="#FF232323"
-                                    BorderBrush="#FF4CAF50"
-                                    BorderThickness="1"
-                                    Padding="10"
-                                    Margin="0,0,0,10"
-                                    Cursor="Hand">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Image Source="{Binding LogoUrl}"
-                                           Width="30" Height="30"
-                                           Margin="0,0,10,0"/>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding LeagueName}"
-                                                   FontWeight="Bold"
-                                                   Foreground="White"/>
-                                        <TextBlock Text="{Binding CountryName}"
-                                                   FontStyle="Italic"
-                                                   Foreground="LightGray"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </Button>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-        </Border>
-
-        <!-- GRUPPEN PANEL -->
-        <Border Grid.Column="2" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
-            <StackPanel>
-                <TextBlock Text="🏆 Klub-WM Favoriten"
-       FontSize="22" FontWeight="Bold"
-       Foreground="White"
-       Margin="0,0,0,10"/>
-
-                <!-- Statische Spielerliste -->
-                <ListBox Background="#FF383838"
-     Foreground="White"
-     BorderThickness="0"
-     FontSize="16"
-     Padding="5"
-     Margin="0,30,0,30">
-                    <ListBoxItem Content="🥇  Real Madrid"/>
-                    <ListBoxItem Content="🥈  PSG"/>
-                    <ListBoxItem Content="🥉  Bayern München"/>
-                    <ListBoxItem Content="⚽  Manchester City"/>
-                    <ListBoxItem Content="🔥  Barcelona (von der Couch aus)"/>
-                </ListBox>
-
-                <!-- Dynamische Benutzerliste (Admin-only) -->
-                <StackPanel x:Name="AdminPanel" Visibility="Collapsed">
-                    <TextBlock Text="Alle Benutzer (Admin)"
-               FontSize="18" FontWeight="SemiBold"
-               Foreground="White"
-               Margin="0,0,0,5"/>
-                    <ItemsControl ItemsSource="{Binding BenutzerListe}">
-                        <ItemsControl.ItemTemplate>
+            <!-- NEWS PANEL -->
+            <Border Grid.Column="0" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
+                <StackPanel>
+                    <TextBlock Text="⚽ Fußball-News"
+                               FontSize="22" FontWeight="Bold" Foreground="White"
+                               Margin="0,0,0,10"/>
+                    <ListBox x:Name="NewsListBox"
+                             Height="636"
+                             Background="#FF383838"
+                             BorderThickness="0"
+                             Foreground="White"
+                             MouseDoubleClick="NewsListBox_MouseDoubleClick"
+                             Width="290">
+                        <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Margin="0,2">
-                                    <TextBlock Text="{Binding benutzername}"
-                               Foreground="White"
-                               Width="120"/>
-                                    <Button Content="Löschen"
-                            Click="LoeschenButton_Click"
-                            Tag="{Binding benutzername}"
-                            Background="#FFD32F2F"
-                            Foreground="White"
-                            Width="70" Height="22"
-                            FontSize="12"/>
-                                </StackPanel>
+                                <Border Margin="0,0,0,10"
+                                        Padding="10"
+                                        Background="#FF232323"
+                                        CornerRadius="6"
+                                        BorderBrush="#FF4CAF50"
+                                        BorderThickness="1">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontWeight="Bold"
+                                                   FontSize="16"
+                                                   Foreground="White"
+                                                   TextWrapping="Wrap"
+                                                   MaxWidth="235"/>
+                                    </StackPanel>
+                                </Border>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </StackPanel>
-            </StackPanel>
-        </Border>
+            </Border>
+
+            <!-- TICKER PANEL -->
+            <Border Grid.Column="1" Background="#FF252525" Margin="10" Padding="15" CornerRadius="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="📡 Liveticker"
+                               FontSize="22" FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,0,0,10"/>
+
+                    <!-- Suchfeld -->
+                    <TextBox Grid.Row="1"
+                             x:Name="TextBoxLeaguen"
+                             Margin="0,0,0,10"
+                             Text="🔍 search ..."
+                             Foreground="Gray"
+                             GotFocus="TextBoxLeaguen_GotFocus"
+                             LostFocus="TextBoxLeaguen_LostFocus"
+                             TextChanged="TextBoxLeaguen_TextChanged"/>
+
+                    <!-- Ligenliste -->
+                    <ListBox Grid.Row="3"
+                             x:Name="ListBoxLeaguen"
+                             Margin="0"
+                             Background="#FF383838"
+                             Foreground="White"
+                             BorderThickness="0"
+                             HorizontalContentAlignment="Stretch"
+                             SelectionMode="Single">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Button Click="LeagueButton_Click"
+                                        Background="#FF232323"
+                                        BorderBrush="#FF4CAF50"
+                                        BorderThickness="1"
+                                        Padding="10"
+                                        Margin="0,0,0,10"
+                                        Cursor="Hand">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Image Source="{Binding LogoUrl}"
+                                               Width="30" Height="30"
+                                               Margin="0,0,10,0"/>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding LeagueName}"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                            <TextBlock Text="{Binding CountryName}"
+                                                       FontStyle="Italic"
+                                                       Foreground="LightGray"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <!-- GRUPPEN PANEL -->
+            <Border Grid.Column="2" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
+                <StackPanel>
+                    <TextBlock Text="🏆 Klub-WM Favoriten"
+                               FontSize="22" FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,0,0,10"/>
+
+                    <!-- Statische Liste -->
+                    <ListBox Background="#FF383838"
+                             Foreground="White"
+                             BorderThickness="0"
+                             FontSize="16"
+                             Padding="5"
+                             Margin="0,30,0,30">
+                        <ListBoxItem Content="🥇  Real Madrid"/>
+                        <ListBoxItem Content="🥈  PSG"/>
+                        <ListBoxItem Content="🥉  Bayern München"/>
+                        <ListBoxItem Content="⚽  Manchester City"/>
+                        <ListBoxItem Content="🔥  Barcelona (von der Couch aus)"/>
+                    </ListBox>
+
+                    <!-- Admin Benutzerliste -->
+                    <StackPanel x:Name="AdminPanel" Visibility="Collapsed">
+                        <TextBlock Text="Alle Benutzer (Admin)"
+                                   FontSize="18" FontWeight="SemiBold"
+                                   Foreground="White"
+                                   Margin="0,0,0,5"/>
+                        <ItemsControl ItemsSource="{Binding BenutzerListe}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Margin="0,2">
+                                        <TextBlock Text="{Binding benutzername}"
+                                                   Foreground="White"
+                                                   Width="120"/>
+                                        <Button Content="Löschen"
+                                                Click="LoeschenButton_Click"
+                                                Tag="{Binding benutzername}"
+                                                Background="#FFD32F2F"
+                                                Foreground="White"
+                                                Width="70" Height="22"
+                                                FontSize="12"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Abmelden-Button unten rechts -->
+        <Grid Grid.Row="1">
+            <Button Content="Abmelden"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="10"
+                    Padding="10,5"
+                    Width="100"
+                    Background="#FFD32F2F"
+                    Foreground="White"
+                    Click="AbmeldenButton_Click"/>
+        </Grid>
     </Grid>
 </Window>

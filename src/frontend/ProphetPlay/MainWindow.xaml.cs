@@ -193,9 +193,18 @@ namespace ProphetPlay
             {
                 MessageBox.Show($"Ausnahme beim Löschen: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            // jaja
         }
+
+        private void AbmeldenButton_Click(object sender, RoutedEventArgs e)
+        { 
+            var result = MessageBox.Show("Willst du dich wirklich abmelden?", "Abmelden", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                new LoginWindow().Show();
+                this.Close();
+            }
+        }
+
     }
 }
 
