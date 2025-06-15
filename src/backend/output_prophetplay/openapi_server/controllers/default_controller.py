@@ -1,8 +1,11 @@
+
 import requests
 from openapi_server.models.register_request import RegisterRequest
 from openapi_server.models.login_request import LoginRequest
 from flask import jsonify, request
 from passlib.hash import pbkdf2_sha256 as crypto
+import traceback
+
 
 SUPABASE_URL = "https://qccwfrohegoiaizozyks.supabase.co"
 SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjY3dmcm9oZWdvaWFpem96eWtzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMDMwODAsImV4cCI6MjA2NDc3OTA4MH0.czyt8tylDANbC7i1iDtk5oh3Clebh9LLleJVuSt8Pg8"
@@ -140,29 +143,32 @@ def api_benutzer_loeschen_delete():
     try:
         requester = request.args.get("requester")
         target    = request.args.get("target")
+        print(f">> DELETE request: requester={requester}, target={target}")
 
-        # Prüfen, ob requester Admin ist
-        check_url = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
-        check_resp = requests.get(check_url, headers=SUPABASE_HEADERS)
-        if check_resp.status_code != 200:
-            return "Fehler beim Rollencheck", 500
+        if not requester or not target:
+            return "Fehlende Parameter", 400
 
-        check_data = check_resp.json()
-        if not check_data or check_data[0]["role_id"] != 1:
+        # Admin-Check
+        check_url  = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
+        resp       = requests.get(check_url, headers=SUPABASE_HEADERS)
+        print(">> ROLLE-Ausgabe:", resp.status_code, resp.text)
+        data       = resp.json() or []
+        role_id    = data[0].get("role_id") if data else None
+
+        if role_id != 1:
             return "Nicht autorisiert", 403
 
-        # Benutzer löschen
+        # Delete
         delete_url = f"{SUPABASE_URL}/rest/v1/users?benutzername=eq.{target}"
-        delete_headers = SUPABASE_HEADERS.copy()
-        delete_headers["Prefer"] = "return=minimal"
+        headers    = {**SUPABASE_HEADERS, "Prefer": "return=minimal"}
+        d_resp     = requests.delete(delete_url, headers=headers)
 
-        delete_resp = requests.delete(delete_url, headers=delete_headers)
-
-        if delete_resp.status_code not in (200, 204):
-            return "Fehler beim Löschen", delete_resp.status_code
+        print(">> Supabase DELETE:", d_resp.status_code, d_resp.text)
+        if d_resp.status_code not in (200, 204):
+            return f"Fehler beim Löschen: {d_resp.text}", d_resp.status_code
 
         return "Benutzer gelöscht", 200
 
     except Exception as e:
-        print("Fehler beim Löschen:", e)
+        import traceback; traceback.print_exc()
         return "Serverfehler", 500

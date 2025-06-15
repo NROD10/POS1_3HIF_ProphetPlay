@@ -145,23 +145,23 @@
                 <!-- Dynamische Benutzerliste (Admin-only) -->
                 <StackPanel x:Name="AdminPanel" Visibility="Collapsed">
                     <TextBlock Text="Alle Benutzer (Admin)"
-                               FontSize="18" FontWeight="SemiBold"
-                               Foreground="White"
-                               Margin="0,0,0,5"/>
+               FontSize="18" FontWeight="SemiBold"
+               Foreground="White"
+               Margin="0,0,0,5"/>
                     <ItemsControl ItemsSource="{Binding BenutzerListe}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,2">
                                     <TextBlock Text="{Binding benutzername}"
-                                               Foreground="White"
-                                               Width="120"/>
+                               Foreground="White"
+                               Width="120"/>
                                     <Button Content="Löschen"
-                                            Click="LoeschenButton_Click"
-                                            Tag="{Binding benutzername}"
-                                            Background="#FFD32F2F"
-                                            Foreground="White"
-                                            Width="70" Height="22"
-                                            FontSize="12"/>
+                            Click="LoeschenButton_Click"
+                            Tag="{Binding benutzername}"
+                            Background="#FFD32F2F"
+                            Foreground="White"
+                            Width="70" Height="22"
+                            FontSize="12"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

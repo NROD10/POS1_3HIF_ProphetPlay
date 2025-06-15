@@ -86,6 +86,7 @@ paths:
         "403": { description: Nicht autorisiert }
         "500": { description: Serverfehler }
 
+
 components:
   schemas:
     RegisterRequest:
