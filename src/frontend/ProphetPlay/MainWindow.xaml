@@ -73,15 +73,7 @@
                          LostFocus="TextBoxLeaguen_LostFocus"
                          TextChanged="TextBoxLeaguen_TextChanged"/>
 
-                <Button Grid.Row="2"
-                        Content="Spiele anzeigen"
-                        Width="160" Height="35"
-                        Background="#FF4CAF50"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        Margin="5,5,5,15"
-                        Click="Spiele_anzeigen_Button"/>
-
+                
                 <ListBox Grid.Row="3"
                          x:Name="ListBoxLeaguen"
                          Margin="0"
