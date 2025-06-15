@@ -51,9 +51,6 @@
                             Background="#2196F3" Foreground="White" FontWeight="Normal"
                             HorizontalAlignment="Center"/>
 
-                    <TextBlock Text="Zugangsdaten: user/admin | Passwort: 1234"
-                               Foreground="Gray" FontSize="11"
-                               HorizontalAlignment="Center" Margin="0,15,0,0"/>
                 </StackPanel>
             </Grid>
         </Border>
