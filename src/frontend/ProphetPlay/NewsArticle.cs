@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 
 namespace ProphetPlay
 {
+    /// <summary>
+    /// Zeigt einen einzelnen Nachrichtenartikel 
+    /// mit Titel, Beschreibung, Veröffentlichungsdatum, Link
+    /// </summary>
     public class NewsArticle
     {
-        // Diese Zeile muss drin stehen, damit der Delete-Button weiß, welche News-ID
-        public int Id { get; set; }
+        
+        public int Id { get; set; }     // Diese Zeile muss drin stehen, damit der Delete-Button weiß, welche News-ID
 
         public string Title { get; set; }
         public string Description { get; set; }
-        public string Url { get; set; }
         public DateTime PublishedAt { get; set; }
+        public string Url { get; set; }
+
+
     }
 }

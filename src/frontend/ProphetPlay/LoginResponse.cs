@@ -6,10 +6,18 @@ using System.Threading.Tasks;
 
 namespace ProphetPlay
 {
+
+    /// <summary>
+    /// Stellt die Antwort nach dem Login dar.
+    /// </summary>
     public class LoginResponse
     {
         public string benutzername { get; set; }
+
+        /// <summary>
+        /// Die Rolle des Benutzers admin und user
+        /// </summary>
         public string rolle { get; set; }
-        // jaja
+
     }
 }

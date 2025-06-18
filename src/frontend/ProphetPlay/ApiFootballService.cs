@@ -1,73 +1,127 @@
 ﻿using Newtonsoft.Json;
 using ProphetPlay;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
+/// <summary>
+/// Stellt Methoden zum Abrufen von Fußball-Daten über die API-Football-REST-API bereit
+/// </summary>
 public static class ApiFootballService
 {
     private static readonly HttpClient _client;
     private const string ApiKey = "47b2ec2efa506d41c568e5858f9540ea";
 
-    // HttpClient wird einmal eingerichtet und der API-Schlüssel gesetzt.
     static ApiFootballService()
     {
         _client = new HttpClient();
         _client.DefaultRequestHeaders.Add("x-apisports-key", ApiKey);
+        LoggerService.Logger.Information("HttpClient mit API-Schlüssel initialisiert.");
     }
 
-    /// <summary>
-    /// Holt alle verfügbaren Ligen (z. B. Bundesliga, Premier League…) von der API.
-    /// </summary>
     public static async Task<List<LeaguesArticle>> GetLeaguesAsync()
     {
+        LoggerService.Logger.Information("GetLeaguesAsync aufgerufen...");
         var json = await _client.GetStringAsync("https://v3.football.api-sports.io/leagues");
+        LoggerService.Logger.Debug("Empfangenes JSON für Ligen: {0}", json);
         var result = JsonConvert.DeserializeObject<LeaguesApiResponse>(json);
 
-        // Wandelt die API-Antwort in eine Liste von LeaguesArticle um (vereinfacht für dein Programm).
-        return result.Response.Select(x => new LeaguesArticle
+        List<LeaguesArticle> articles = new List<LeaguesArticle>();
+
+        foreach (var x in result.Response)
         {
-            LeagueId = x.League.Id,
-            LeagueName = x.League.Name,
-            LogoUrl = x.League.Logo,
-            CountryName = x.Country.Name,
-            Season = x.Seasons?.FirstOrDefault(s => s.Current)?.Year
-                      ?? x.Seasons?.Max(s => s.Year)
-                      ?? DateTime.UtcNow.Year
-        }).ToList();
+            LeaguesArticle article = new LeaguesArticle();
+            article.LeagueId = x.League.Id;
+            article.LeagueName = x.League.Name;
+            article.LogoUrl = x.League.Logo;
+            article.CountryName = x.Country.Name;
+
+            int seasonYear = DateTime.UtcNow.Year;
+
+            if (x.Seasons != null)
+            {
+                foreach (var s in x.Seasons)
+                {
+                    if (s.Current)
+                    {
+                        seasonYear = s.Year;
+                        break;
+                    }
+                }
+
+                if (seasonYear == DateTime.UtcNow.Year)
+                {
+                    int max = 0;
+                    foreach (var s in x.Seasons)
+                    {
+                        if (s.Year > max)
+                        {
+                            max = s.Year;
+                        }
+                    }
+
+                    if (max > 0)
+                    {
+                        seasonYear = max;
+                    }
+                }
+            }
+
+            article.Season = seasonYear;
+
+            articles.Add(article);
+        }
+
+        LoggerService.Logger.Information("{0} Ligen zurückgegeben.", articles.Count);
+        return articles;
     }
 
-    /// <summary>
-    /// Holt die nächsten Spiele einer bestimmten Liga in einer Saison (Standard: 10 Spiele).
-    /// Kann auch Live-Spiele enthalten.
-    /// </summary>
     public static async Task<List<LiveMatchResponse>> GetUpcomingMatchesAsync(int leagueId, int season, int next = 10)
     {
         string url = $"https://v3.football.api-sports.io/fixtures" +
                      $"?league={leagueId}" +
                      $"&season={season}" +
                      $"&next={next}";
+        LoggerService.Logger.Information("GetUpcomingMatchesAsync mit URL aufgerufen: {0}", url);
         var json = await _client.GetStringAsync(url);
+        LoggerService.Logger.Debug("Empfangenes JSON für kommende Spiele: {0}", json);
         var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
-        return result.Response ?? new List<LiveMatchResponse>();
+
+        if (result.Response != null)
+        {
+            LoggerService.Logger.Information("{0} kommende Spiele zurückgegeben.", result.Response.Count);
+            return result.Response;
+        }
+        else
+        {
+            LoggerService.Logger.Warning("Keine kommenden Spiele gefunden.");
+            return new List<LiveMatchResponse>();
+        }
     }
 
-    /// <summary>
-    /// Holt die letzten Spiele (mit Ergebnissen) einer Liga/Saison (Standard: 10).
-    /// </summary>
     public static async Task<List<LiveMatchResponse>> GetPastMatchesAsync(int leagueId, int season, int last = 10)
     {
         string url = $"https://v3.football.api-sports.io/fixtures" +
                      $"?league={leagueId}" +
                      $"&season={season}" +
                      $"&last={last}";
+        LoggerService.Logger.Information("GetPastMatchesAsync mit URL aufgerufen: {0}", url);
         var json = await _client.GetStringAsync(url);
+        LoggerService.Logger.Debug("Empfangenes JSON für vergangene Spiele: {0}", json);
         var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
-        return result.Response ?? new List<LiveMatchResponse>();
+
+        if (result.Response != null)
+        {
+            LoggerService.Logger.Information("{0} vergangene Spiele zurückgegeben.", result.Response.Count);
+            return result.Response;
+        }
+        else
+        {
+            LoggerService.Logger.Warning("Keine vergangenen Spiele gefunden.");
+            return new List<LiveMatchResponse>();
+        }
     }
 
-    /// <summary>
-    /// Holt alle Spiele einer Liga in einem bestimmten Zeitraum (z. B. nächsten 30 Tage).
-    /// Nützlich als Fallback, falls andere Methoden keine Daten liefern.
-    /// </summary>
     public static async Task<List<LiveMatchResponse>> GetMatchesByDateRangeAsync(int leagueId, int season, int days = 30)
     {
         var from = DateTime.UtcNow.ToString("yyyy-MM-dd");
@@ -78,19 +132,40 @@ public static class ApiFootballService
                      $"&season={season}" +
                      $"&from={from}" +
                      $"&to={to}";
+        LoggerService.Logger.Information("GetMatchesByDateRangeAsync mit URL aufgerufen: {0}", url);
         var json = await _client.GetStringAsync(url);
+        LoggerService.Logger.Debug("Empfangenes JSON für Spiele im Datumsbereich: {0}", json);
         var result = JsonConvert.DeserializeObject<LiveMatchesApiResponse>(json);
-        return result.Response ?? new List<LiveMatchResponse>();
+
+        if (result.Response != null)
+        {
+            LoggerService.Logger.Information("{0} Spiele im angegebenen Zeitraum zurückgegeben.", result.Response.Count);
+            return result.Response;
+        }
+        else
+        {
+            LoggerService.Logger.Warning("Keine Spiele im angegebenen Zeitraum gefunden.");
+            return new List<LiveMatchResponse>();
+        }
     }
 
-    /// <summary>
-    /// Holt alle Events zu einem bestimmten Spiel (z. B. Tore, Karten, Auswechslungen).
-    /// </summary>
     public static async Task<List<FixtureEvent>> GetFixtureEventsAsync(int fixtureId)
     {
         string url = $"https://v3.football.api-sports.io/fixtures/events?fixture={fixtureId}";
+        LoggerService.Logger.Information("GetFixtureEventsAsync mit Spiel-ID {0} aufgerufen.", fixtureId);
         var json = await _client.GetStringAsync(url);
+        LoggerService.Logger.Debug("Empfangenes JSON für Spielereignisse: {0}", json);
         var wrapper = JsonConvert.DeserializeObject<FixtureEventsApiResponse>(json);
-        return wrapper.Response ?? new List<FixtureEvent>();
+
+        if (wrapper.Response != null)
+        {
+            LoggerService.Logger.Information("{0} Spielereignisse zurückgegeben.", wrapper.Response.Count);
+            return wrapper.Response;
+        }
+        else
+        {
+            LoggerService.Logger.Warning("Keine Spielereignisse gefunden.");
+            return new List<FixtureEvent>();
+        }
     }
 }

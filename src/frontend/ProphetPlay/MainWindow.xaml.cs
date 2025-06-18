@@ -10,15 +10,42 @@ using System.Windows.Controls;
 
 namespace ProphetPlay
 {
+    // <summary>
+    /// Hauptfenster der Anwendung
+    /// Zeigt Ligen, News und Admin-Funktionen an
+    /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Der aktuell angemeldete Benutzername
+        /// </summary>
         public string AktuellerBenutzername { get; set; }
+
+        /// <summary>
+        /// Die Rolle des aktuellen Benutzers entweder Admin oder User
+        /// </summary>
         public string AktuelleRolle { get; set; }
+
+        /// <summary>
+        /// Liste aller Benutzer die nur für Admin sichtbar sind
+        /// </summary>
         public ObservableCollection<LoginResponse> BenutzerListe { get; set; } = new();
 
+        /// <summary>
+        /// Liste aller verfügbaren Ligen
+        /// </summary>
         private List<LeaguesArticle> alleLigen = new();
+
+        /// <summary>
+        /// Gefilterte Ligen nach Suchbegriff
+        /// </summary>
         private ObservableCollection<LeaguesArticle> gefilterteLigen = new();
 
+        /// <summary>
+        /// Initialisiert das Hauptfenster und lädt Daten
+        /// </summary>
+        /// <param name="benutzername">Angemeldeter Benutzername</param>
+        /// <param name="rolle">Benutzerrolle ("Admin" oder "User")</param>
         public MainWindow(string benutzername, string rolle)
         {
             InitializeComponent();
@@ -26,17 +53,25 @@ namespace ProphetPlay
             AktuelleRolle = rolle;
             DataContext = this;
 
+            LoggerService.Logger.Information("MainWindow gestartet für Benutzer: {0}, Rolle: {1}", benutzername, rolle);
+
             _ = LoadNewsAsync();
             _ = LoadLeaguesAsync();
 
+            // Admin-Panel nur für Admins sichtbar
+            LoggerService.Logger.Information("AdminPanel aktiviert für Benutzer: {0}", benutzername);
             AdminPanel.Visibility = AktuelleRolle == "Admin"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
+            // Benutzerliste nur für Admin laden
             if (AktuelleRolle == "Admin")
                 _ = LadeBenutzerListeAsync(AktuellerBenutzername);
         }
 
+        /// <summary>
+        /// Lädt interne und externe Fußball-News und zeigt sie in der NewsListBox an
+        /// </summary>
         private async Task LoadNewsAsync()
         {
             try
@@ -50,43 +85,68 @@ namespace ProphetPlay
             }
             catch (Exception ex)
             {
+                LoggerService.Logger.Error(ex, "Fehler beim Laden der Nachrichten");
                 MessageBox.Show($"Fehler beim Laden der Nachrichten: {ex.Message}", "Fehler",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// Lädt die Liste aller verfügbaren Ligen von der API und zeigt sie im UI an
+        /// </summary>
         private async Task LoadLeaguesAsync()
         {
             try
             {
+                LoggerService.Logger.Information("Lade Ligen von API für Benutzer: {0}", AktuellerBenutzername);
                 alleLigen = await ApiFootballService.GetLeaguesAsync();
                 gefilterteLigen = new ObservableCollection<LeaguesArticle>(alleLigen);
                 ListBoxLeaguen.ItemsSource = gefilterteLigen;
+                LoggerService.Logger.Information("Ligen erfolgreich geladen: {0} Einträge", alleLigen.Count);
             }
             catch (Exception ex)
             {
+                LoggerService.Logger.Error(ex, "Fehler beim Laden der Ligen");
                 MessageBox.Show($"Fehler beim Laden der Ligen: {ex.Message}", "Fehler",
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
+        /// <summary>
+        /// Lädt die Benutzerliste vom Server die nur für Admins sichtbar ist
+        /// </summary>
+        /// <param name="requester">Der Benutzername des aktuellen Admins</param>
         private async Task LadeBenutzerListeAsync(string requester)
         {
+            LoggerService.Logger.Information("Lade Benutzerliste für Admin: {0}", requester);
             using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080") };
             var resp = await client.GetAsync($"/api/benutzer/liste?requester={requester}");
             if (resp.IsSuccessStatusCode)
             {
-                var users = Newtonsoft.Json.JsonConvert
-                             .DeserializeObject<List<LoginResponse>>(await resp.Content.ReadAsStringAsync());
+                var json = await resp.Content.ReadAsStringAsync();
+                var users = System.Text.Json.JsonSerializer.Deserialize<List<LoginResponse>>(json);
                 BenutzerListe.Clear();
-                foreach (var u in users) BenutzerListe.Add(u);
+                foreach (var u in users)
+                {
+                    BenutzerListe.Add(u);
+                }
+                LoggerService.Logger.Information("Benutzerliste geladen mit {0} Einträgen", BenutzerListe.Count);
+            }
+            else
+            {
+                LoggerService.Logger.Warning("Fehler beim Abrufen der Benutzerliste: {0}", resp.StatusCode);
             }
         }
 
-        private void NewsListBox_MouseDoubleClick(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Zeigt Details der ausgewählten News in einem Dialog an
+        /// </summary>
+        private void NewsListBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
             if (NewsListBox.SelectedItem is NewsArticle news)
             {
+                LoggerService.Logger.Information("News ausgewählt: {Title}", news.Title);
+
                 MessageBox.Show(
                     $"{news.Title}\n\n{news.Description}\n\nVeröffentlicht: {news.PublishedAt:dd.MM.yyyy HH:mm}\n\n{news.Url}",
                     "News-Details", MessageBoxButton.OK, MessageBoxImage.Information
@@ -94,8 +154,15 @@ namespace ProphetPlay
             }
         }
 
+
+        /// <summary>
+        /// Wird ausgelöst, wenn das Suchfeld für Ligen den Fokus erhält
+        /// Setzt den Platzhaltertext zurück und ändert die Textfarbe
+        /// </summary>
         private void TextBoxLeaguen_GotFocus(object sender, RoutedEventArgs e)
         {
+            LoggerService.Logger.Information("Suchfeld für Ligen fokussiert");
+
             if (TextBoxLeaguen.Text == "🔍 search ...")
             {
                 TextBoxLeaguen.Text = "";
@@ -103,8 +170,15 @@ namespace ProphetPlay
             }
         }
 
+
+        /// <summary>
+        /// Wird ausgelöst, wenn das Suchfeld für Ligen den Fokus verliert
+        /// Setzt den Platzhaltertext zurück und zeigt alle Ligen an falls das Feld leer ist
+        /// </summary>
         private void TextBoxLeaguen_LostFocus(object sender, RoutedEventArgs e)
         {
+            LoggerService.Logger.Information("Suchfeld für Ligen Fokus verloren");
+
             if (string.IsNullOrWhiteSpace(TextBoxLeaguen.Text))
             {
                 TextBoxLeaguen.Text = "🔍 search ...";
@@ -114,10 +188,18 @@ namespace ProphetPlay
             }
         }
 
+
+        /// <summary>
+        /// Wird ausgelöst, wenn sich der Text im Suchfeld für Ligen ändert
+        /// Filtert die Ligenliste nach dem eingegebenen Suchbegriff
+        /// </summary>
         private void TextBoxLeaguen_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (TextBoxLeaguen.Foreground == System.Windows.Media.Brushes.Gray) return;
+
             var q = TextBoxLeaguen.Text.Trim();
+            LoggerService.Logger.Information("Liga-Suche geändert: {0}", q);
+
             gefilterteLigen.Clear();
             foreach (var l in alleLigen
                 .Where(lg => lg.LeagueName.Contains(q, StringComparison.OrdinalIgnoreCase) ||
@@ -127,30 +209,53 @@ namespace ProphetPlay
             }
         }
 
+
+        /// <summary>
+        /// Öffnet das Spielefenster für die ausgewählte Liga
+        /// </summary>
         private void LeagueButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.DataContext is LeaguesArticle league)
+            {
+                LoggerService.Logger.Information("Liga ausgewählt: {0}", league.LeagueName);
                 new SpieleFenster(league).Show();
+            }
         }
 
+        /// <summary>
+        /// Löscht einen Admin-Benutzer nach Bestätigung
+        /// </summary>
         private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
         {
-            // Admin-Benutzer löschen
             if (sender is Button btn && btn.Tag is string target)
             {
                 if (MessageBox.Show($"Willst du '{target}' wirklich löschen?", "Löschen bestätigen",
                     MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
+                LoggerService.Logger.Information("Admin-Benutzer löschen: {0}", target);
 
                 using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080") };
                 var req = new HttpRequestMessage(HttpMethod.Delete,
                     $"/api/benutzer/loeschen?requester={AktuellerBenutzername}&target={target}");
                 req.Headers.Add("Prefer", "return=minimal");
                 var resp = await client.SendAsync(req);
-                if (resp.IsSuccessStatusCode) await LadeBenutzerListeAsync(AktuellerBenutzername);
-                else MessageBox.Show($"Fehler: {resp.StatusCode}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    LoggerService.Logger.Information("Benutzer {0} erfolgreich gelöscht", target);
+                    await LadeBenutzerListeAsync(AktuellerBenutzername);
+                }
+                else
+                {
+                    LoggerService.Logger.Error("Fehler beim Löschen von Benutzer {0}: {1}", target, resp.StatusCode);
+                    MessageBox.Show($"Fehler: {resp.StatusCode}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
+        /// <summary>
+        /// Löscht eine News nach Bestätigung
+        /// </summary>
         private async void NewsDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && int.TryParse(btn.Tag?.ToString(), out int id))
@@ -158,31 +263,50 @@ namespace ProphetPlay
                 if (MessageBox.Show("Möchtest du diese News wirklich löschen?", "News löschen",
                     MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
+                LoggerService.Logger.Information("News löschen: ID {0}", id);
+
                 var ok = await NewsService.DeleteNewsAsync(id, AktuellerBenutzername);
-                if (ok) await LoadNewsAsync();
-                else MessageBox.Show("Fehler beim Löschen der News.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (ok)
+                {
+                    LoggerService.Logger.Information("News ID {0} erfolgreich gelöscht", id);
+                    await LoadNewsAsync();
+                }
+                else
+                {
+                    LoggerService.Logger.Error("Fehler beim Löschen der News ID {0}", id);
+                    MessageBox.Show("Fehler beim Löschen der News.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
+        /// <summary>
+        /// Meldet den Benutzer nach Bestätigung ab
+        /// </summary>
         private void AbmeldenButton_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Willst du dich wirklich abmelden?", "Abmelden",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
+                LoggerService.Logger.Information("Benutzer {0} meldet sich ab", AktuellerBenutzername);
                 new LoginWindow().Show();
                 Close();
             }
         }
 
+        /// <summary>
+        /// Öffnet das Fenster zur Erstellung einer neuen News und lädt danach die News neu
+        /// </summary>
         private async void BtnCreateNews_Click(object sender, RoutedEventArgs e)
         {
-            // übergebe den aktuellen Benutzernamen
             var win = new CreateNewsWindow(AktuellerBenutzername)
             {
                 Owner = this
             };
             if (win.ShowDialog() == true)
+            {
+                LoggerService.Logger.Information("Neue News erstellt von Benutzer {0}", AktuellerBenutzername);
                 await LoadNewsAsync();
+            }
         }
 
     }
