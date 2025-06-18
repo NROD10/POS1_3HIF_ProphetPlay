@@ -1,7 +1,12 @@
-#from datetime import date, datetime  # noqa: F401
-from typing import List, Dict  # noqa: F401
+# register_request.py
+
+from openapi_server.logger import logger
+from typing import Dict
 from openapi_server.models.base_model import Model
 from openapi_server import util
+
+# Holen des Loggers
+from openapi_server.logger import logger
 
 class RegisterRequest(Model):
     """RegisterRequest - ein Modell für die Registrierung (angepasst auf role_id)."""
@@ -33,9 +38,13 @@ class RegisterRequest(Model):
         self._role_id = role_id
 
     @classmethod
-    def from_dict(cls, dikt) -> 'RegisterRequest':
-        """Deserialisiert ein Dict in ein RegisterRequest."""
-        return util.deserialize_model(dikt, cls)
+    def from_dict(cls, dikt: Dict) -> 'RegisterRequest':
+        """Deserialisiert ein Dict in ein RegisterRequest und loggt den Vorgang."""
+        logger.debug("Deserializing RegisterRequest from dict: %r", dikt)
+        instance = util.deserialize_model(dikt, cls)
+        logger.info("RegisterRequest created for user '%s' with role_id=%s",
+                    instance.benutzername, instance.role_id)
+        return instance
 
     @property
     def benutzername(self) -> str:
@@ -43,7 +52,9 @@ class RegisterRequest(Model):
 
     @benutzername.setter
     def benutzername(self, benutzername: str):
+        logger.debug("Setting benutzername to '%s'", benutzername)
         if benutzername is None:
+            logger.error("Attempted to set benutzername to None")
             raise ValueError("Invalid value for `benutzername`, must not be `None`")
         self._benutzername = benutzername
 
@@ -53,7 +64,9 @@ class RegisterRequest(Model):
 
     @passwort.setter
     def passwort(self, passwort: str):
+        logger.debug("Setting passwort (hidden) for user '%s'", self._benutzername or "<unknown>")
         if passwort is None:
+            logger.error("Attempted to set passwort to None")
             raise ValueError("Invalid value for `passwort`, must not be `None`")
         self._passwort = passwort
 
@@ -63,6 +76,8 @@ class RegisterRequest(Model):
 
     @role_id.setter
     def role_id(self, role_id: int):
+        logger.debug("Setting role_id to %s for user '%s'", role_id, self._benutzername or "<unknown>")
         if role_id is None:
+            logger.error("Attempted to set role_id to None")
             raise ValueError("Invalid value for `role_id`, must not be `None`")
         self._role_id = role_id

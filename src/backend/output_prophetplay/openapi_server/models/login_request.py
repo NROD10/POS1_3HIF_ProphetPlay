@@ -3,6 +3,7 @@ from typing import List, Dict  # noqa: F401
 
 from openapi_server.models.base_model import Model
 from openapi_server import util
+from openapi_server.logger import logger
 
 
 class LoginRequest(Model):
@@ -19,6 +20,7 @@ class LoginRequest(Model):
         :param passwort: The passwort of this LoginRequest.  # noqa: E501
         :type passwort: str
         """
+        logger.info(f"Initializing LoginRequest with benutzername={benutzername}")
         self.openapi_types = {
             'benutzername': str,
             'passwort': str
@@ -41,6 +43,7 @@ class LoginRequest(Model):
         :return: The LoginRequest of this LoginRequest.  # noqa: E501
         :rtype: LoginRequest
         """
+        logger.info(f"Deserializing LoginRequest from dict: {dikt}")
         return util.deserialize_model(dikt, cls)
 
     @property
@@ -61,7 +64,9 @@ class LoginRequest(Model):
         :param benutzername: The benutzername of this LoginRequest.
         :type benutzername: str
         """
+        logger.info(f"Setting benutzername to: {benutzername}")
         if benutzername is None:
+            logger.error("Attempted to set benutzername to None")
             raise ValueError("Invalid value for `benutzername`, must not be `None`")  # noqa: E501
 
         self._benutzername = benutzername
@@ -84,7 +89,9 @@ class LoginRequest(Model):
         :param passwort: The passwort of this LoginRequest.
         :type passwort: str
         """
+        logger.info(f"Setting passwort for user {self._benutzername}")
         if passwort is None:
+            logger.error("Attempted to set passwort to None")
             raise ValueError("Invalid value for `passwort`, must not be `None`")  # noqa: E501
 
         self._passwort = passwort
