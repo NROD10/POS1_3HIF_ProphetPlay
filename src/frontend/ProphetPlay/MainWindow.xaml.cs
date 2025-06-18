@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using Newtonsoft.Json;
-using System.Diagnostics;
 
 namespace ProphetPlay
 {
@@ -19,22 +16,20 @@ namespace ProphetPlay
         public string AktuelleRolle { get; set; }
         public ObservableCollection<LoginResponse> BenutzerListe { get; set; } = new();
 
-        // alle Ligen, gefilterte Ligen
         private List<LeaguesArticle> alleLigen = new();
         private ObservableCollection<LeaguesArticle> gefilterteLigen = new();
 
         public MainWindow(string benutzername, string rolle)
         {
             InitializeComponent();
-
             AktuellerBenutzername = benutzername;
             AktuelleRolle = rolle;
             DataContext = this;
 
-            LoadNews();
+            _ = LoadNewsAsync();
             _ = LoadLeaguesAsync();
 
-            AdminPanel.Visibility = (AktuelleRolle == "Admin")
+            AdminPanel.Visibility = AktuelleRolle == "Admin"
                 ? Visibility.Visible
                 : Visibility.Collapsed;
 
@@ -42,16 +37,21 @@ namespace ProphetPlay
                 _ = LadeBenutzerListeAsync(AktuellerBenutzername);
         }
 
-        private async void LoadNews()
+        private async Task LoadNewsAsync()
         {
             try
             {
-                var news = await NewsService.GetFootballNewsAsync();
-                NewsListBox.ItemsSource = news;
+                var combined = new List<NewsArticle>();
+                try { combined.AddRange(await NewsService.GetAllNewsAsync()); }
+                catch { /* ignore */ }
+                try { combined.AddRange(await NewsService.GetFootballNewsAsync()); }
+                catch (Exception ex) { Debug.WriteLine("Fehler externe News: " + ex.Message); }
+                NewsListBox.ItemsSource = combined;
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Nachrichten: {ex.Message}");
+                MessageBox.Show($"Fehler beim Laden der Nachrichten: {ex.Message}", "Fehler",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -65,25 +65,21 @@ namespace ProphetPlay
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Fehler beim Laden der Ligen: {ex.Message}");
+                MessageBox.Show($"Fehler beim Laden der Ligen: {ex.Message}", "Fehler",
+                                MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private async Task LadeBenutzerListeAsync(string requester)
         {
             using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080") };
-            var response = await client.GetAsync($"/api/benutzer/liste?requester={requester}");
-            if (response.IsSuccessStatusCode)
+            var resp = await client.GetAsync($"/api/benutzer/liste?requester={requester}");
+            if (resp.IsSuccessStatusCode)
             {
-                var json = await response.Content.ReadAsStringAsync();
-                var users = System.Text.Json.JsonSerializer
-                              .Deserialize<List<LoginResponse>>(json);
+                var users = Newtonsoft.Json.JsonConvert
+                             .DeserializeObject<List<LoginResponse>>(await resp.Content.ReadAsStringAsync());
                 BenutzerListe.Clear();
                 foreach (var u in users) BenutzerListe.Add(u);
-            }
-            else
-            {
-                MessageBox.Show($"Fehler beim Laden der Benutzer: {response.StatusCode}");
             }
         }
 
@@ -93,9 +89,7 @@ namespace ProphetPlay
             {
                 MessageBox.Show(
                     $"{news.Title}\n\n{news.Description}\n\nVeröffentlicht: {news.PublishedAt:dd.MM.yyyy HH:mm}\n\n{news.Url}",
-                    "News-Details",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information
+                    "News-Details", MessageBoxButton.OK, MessageBoxImage.Information
                 );
             }
         }
@@ -105,7 +99,7 @@ namespace ProphetPlay
             if (TextBoxLeaguen.Text == "🔍 search ...")
             {
                 TextBoxLeaguen.Text = "";
-                TextBoxLeaguen.Foreground = Brushes.Black;
+                TextBoxLeaguen.Foreground = System.Windows.Media.Brushes.Black;
             }
         }
 
@@ -114,8 +108,7 @@ namespace ProphetPlay
             if (string.IsNullOrWhiteSpace(TextBoxLeaguen.Text))
             {
                 TextBoxLeaguen.Text = "🔍 search ...";
-                TextBoxLeaguen.Foreground = Brushes.Gray;
-                // alle Ligen wiederherstellen
+                TextBoxLeaguen.Foreground = System.Windows.Media.Brushes.Gray;
                 gefilterteLigen.Clear();
                 foreach (var l in alleLigen) gefilterteLigen.Add(l);
             }
@@ -123,88 +116,74 @@ namespace ProphetPlay
 
         private void TextBoxLeaguen_TextChanged(object sender, TextChangedEventArgs e)
         {
-            // Placeholder ignorieren
-            if (TextBoxLeaguen.Foreground == Brushes.Gray) return;
-
-            var query = TextBoxLeaguen.Text.Trim();
+            if (TextBoxLeaguen.Foreground == System.Windows.Media.Brushes.Gray) return;
+            var q = TextBoxLeaguen.Text.Trim();
             gefilterteLigen.Clear();
-            foreach (var liga in alleLigen
-                         .Where(l => l.LeagueName.Contains(query, StringComparison.OrdinalIgnoreCase)
-                                  || l.CountryName.Contains(query, StringComparison.OrdinalIgnoreCase)))
+            foreach (var l in alleLigen
+                .Where(lg => lg.LeagueName.Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                             lg.CountryName.Contains(q, StringComparison.OrdinalIgnoreCase)))
             {
-                gefilterteLigen.Add(liga);
+                gefilterteLigen.Add(l);
             }
         }
 
         private void LeagueButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.DataContext is LeaguesArticle league)
-            {
-                var fenster = new SpieleFenster(league);
-                fenster.Show();
-            }
-        }
-
-        private void Spiele_anzeigen_Button(object sender, RoutedEventArgs e)
-        {
-            // Deine bestehende Logik hier…
+                new SpieleFenster(league).Show();
         }
 
         private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(sender is Button btn) || !(btn.Tag is string targetBenutzer))
-                return;
-
-            var confirm = MessageBox.Show(
-                $"Willst du '{targetBenutzer}' wirklich löschen?",
-                "Löschen bestätigen",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning
-            );
-            if (confirm != MessageBoxResult.Yes) return;
-
-            try
+            // Admin-Benutzer löschen
+            if (sender is Button btn && btn.Tag is string target)
             {
+                if (MessageBox.Show($"Willst du '{target}' wirklich löschen?", "Löschen bestätigen",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
                 using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080") };
-                // Baue deine DELETE-Request manuell, um Header setzen zu können
-                var request = new HttpRequestMessage(HttpMethod.Delete,
-                    $"/api/benutzer/loeschen?requester={AktuellerBenutzername}&target={targetBenutzer}"
-                );
-                request.Headers.Add("Prefer", "return=minimal");
-
-                var response = await client.SendAsync(request);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Benutzer erfolgreich gelöscht.", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
-                    await LadeBenutzerListeAsync(AktuellerBenutzername);
-                }
-                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                {
-                    MessageBox.Show("Nicht autorisiert.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                }
-                else
-                {
-                    var err = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show($"Fehler: {response.StatusCode}\n{err}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                var req = new HttpRequestMessage(HttpMethod.Delete,
+                    $"/api/benutzer/loeschen?requester={AktuellerBenutzername}&target={target}");
+                req.Headers.Add("Prefer", "return=minimal");
+                var resp = await client.SendAsync(req);
+                if (resp.IsSuccessStatusCode) await LadeBenutzerListeAsync(AktuellerBenutzername);
+                else MessageBox.Show($"Fehler: {resp.StatusCode}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            catch (Exception ex)
+        }
+
+        private async void NewsDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && int.TryParse(btn.Tag?.ToString(), out int id))
             {
-                MessageBox.Show($"Ausnahme beim Löschen: {ex.Message}", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (MessageBox.Show("Möchtest du diese News wirklich löschen?", "News löschen",
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+
+                var ok = await NewsService.DeleteNewsAsync(id, AktuellerBenutzername);
+                if (ok) await LoadNewsAsync();
+                else MessageBox.Show("Fehler beim Löschen der News.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void AbmeldenButton_Click(object sender, RoutedEventArgs e)
-        { 
-            var result = MessageBox.Show("Willst du dich wirklich abmelden?", "Abmelden", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
+        {
+            if (MessageBox.Show("Willst du dich wirklich abmelden?", "Abmelden",
+                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 new LoginWindow().Show();
-                this.Close();
+                Close();
             }
+        }
+
+        private async void BtnCreateNews_Click(object sender, RoutedEventArgs e)
+        {
+            // übergebe den aktuellen Benutzernamen
+            var win = new CreateNewsWindow(AktuellerBenutzername)
+            {
+                Owner = this
+            };
+            if (win.ShowDialog() == true)
+                await LoadNewsAsync();
         }
 
     }
 }
-

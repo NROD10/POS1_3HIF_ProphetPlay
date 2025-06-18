@@ -86,6 +86,59 @@ paths:
         "403": { description: Nicht autorisiert }
         "500": { description: Serverfehler }
 
+  /api/news:
+    get:
+      summary: Alle News (öffentlich)
+      operationId: openapi_server.controllers.default_controller.api_news_get
+      responses:
+        "200":
+          description: Liste aller News
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsItem'
+
+    post:
+      summary: Neue News anlegen (Admin)
+      operationId: openapi_server.controllers.default_controller.api_news_post
+      parameters:
+        - name: requester
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsItemCreate'
+      responses:
+        "201": { description: News angelegt }
+        "403": { description: Nicht autorisiert }
+        "500": { description: Serverfehler }
+
+    delete:
+      summary: News löschen (Admin, nur eigene)
+      operationId: openapi_server.controllers.default_controller.api_news_delete
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: requester
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200": { description: News gelöscht }
+        "403": { description: Nicht autorisiert }
+        "404": { description: Nicht gefunden }
+        "500": { description: Serverfehler }
 
 components:
   schemas:
@@ -99,6 +152,7 @@ components:
           type: string
         role_id:
           type: integer
+
     LoginRequest:
       type: object
       required: [benutzername, passwort]
@@ -107,10 +161,39 @@ components:
           type: string
         passwort:
           type: string
+
     LoginResponse:
       type: object
       properties:
         benutzername:
           type: string
         rolle:
+          type: string
+
+    NewsItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        url:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+
+    NewsItemCreate:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        url:
           type: string

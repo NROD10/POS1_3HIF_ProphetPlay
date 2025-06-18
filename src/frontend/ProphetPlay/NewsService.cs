@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Text;
+using Newtonsoft.Json.Serialization;
 
 
 namespace ProphetPlay
@@ -43,6 +45,36 @@ namespace ProphetPlay
                 }
             }
         }
+        public static async Task<List<NewsArticle>> GetAllNewsAsync()
+        {
+            using var client = new HttpClient();
+            var json = await client.GetStringAsync("http://localhost:8080/api/news");
+            return JsonConvert.DeserializeObject<List<NewsArticle>>(json);
+        }
+
+        public static async Task<bool> CreateNewsAsync(NewsArticleCreate dto, string requester)
+        {
+            using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080/") };
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            };
+            var json = JsonConvert.SerializeObject(dto, settings);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var resp = await client.PostAsync($"api/news?requester={requester}", content);
+            return resp.IsSuccessStatusCode;
+        }
+
+
+        // NewsService.cs
+        public static async Task<bool> DeleteNewsAsync(int id, string requester)
+        {
+            using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080/") };
+            var resp = await client.DeleteAsync($"api/news?id={id}&requester={Uri.EscapeDataString(requester)}");
+            return resp.IsSuccessStatusCode;
+        }
+
+
     }
 
 }

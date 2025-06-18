@@ -1,0 +1,73 @@
+﻿<!-- CreateNewsWindow.xaml -->
+<Window x:Class="ProphetPlay.CreateNewsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Neue News erstellen"
+        Height="350" Width="400"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF1E1E1E">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Titel-Label -->
+            <RowDefinition Height="Auto"/>
+            <!-- Titel-Textbox -->
+            <RowDefinition Height="Auto"/>
+            <!-- Beschreibung-Label -->
+            <RowDefinition Height="*"/>
+            <!-- Beschreibung-Textbox -->
+            <RowDefinition Height="Auto"/>
+            <!-- URL-Label -->
+            <RowDefinition Height="Auto"/>
+            <!-- URL-Textbox -->
+            <RowDefinition Height="Auto"/>
+            <!-- Buttons -->
+        </Grid.RowDefinitions>
+
+        <!-- Titel -->
+        <TextBlock Text="Titel" Foreground="White"/>
+        <TextBox x:Name="TxtTitle"
+                 Grid.Row="1"
+                 Margin="0,5"
+                 Background="#FF2A2A2A"
+                 Foreground="White"/>
+
+        <!-- Beschreibung -->
+        <TextBlock Text="Beschreibung"
+                   Grid.Row="2"
+                   Margin="0,10,0,0"
+                   Foreground="White"/>
+        <TextBox x:Name="TxtDescription"
+                 Grid.Row="3"
+                 Margin="0,5"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 Background="#FF2A2A2A"
+                 Foreground="White"/>
+
+        <!-- URL -->
+        <TextBlock Text="URL"
+                   Grid.Row="4"
+                   Margin="0,10,0,0"
+                   Foreground="White"/>
+        <TextBox x:Name="TxtUrl"
+                 Grid.Row="5"
+                 Margin="0,5"
+                 Background="#FF2A2A2A"
+                 Foreground="White"/>
+
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="6"
+                    HorizontalAlignment="Right"
+                    Margin="0,15,0,0">
+            <Button Content="Abbrechen"
+                    Width="80"
+                    Margin="0,0,10,0"
+                    Click="OnCancel"/>
+            <Button Content="Erstellen"
+                    Width="80"
+                    Click="OnCreate"/>
+        </StackPanel>
+    </Grid>
+</Window>
