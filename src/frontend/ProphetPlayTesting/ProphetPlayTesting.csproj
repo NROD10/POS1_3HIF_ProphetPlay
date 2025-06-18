@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- exakt dieselbe TFM wie dein Hauptprojekt -->
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
+		<!-- WPF-Types (z.B. Visibility) verfügbar machen -->
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Referenz auf dein Haupt‐Projekt -->
+		<ProjectReference Include="..\ProphetPlay\ProphetPlay.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Test SDK für MSTest -->
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+		<!-- MSTest Adapter & Framework -->
+		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+	</ItemGroup>
+
+</Project>

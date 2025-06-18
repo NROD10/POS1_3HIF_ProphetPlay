@@ -1,0 +1,70 @@
+2025-06-18 23:10:22.303 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:10:22.303 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: User
+2025-06-18 23:10:22.303 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: Admin
+2025-06-18 23:10:22.303 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:10:22.303 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:10:22.303 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: admin
+2025-06-18 23:10:22.337 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:10:22.338 +02:00 [INF] Rolle ist nicht Admin: Sichtbarkeit = Collapsed
+2025-06-18 23:10:22.338 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-18 23:10:22.338 +02:00 [DBG] Rolle: User
+2025-06-18 23:10:22.338 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:10:22.338 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-18 23:10:22.338 +02:00 [INF] Benutzer ist kein Admin.
+2025-06-18 23:10:22.338 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-18 23:10:22.338 +02:00 [DBG] Sichtbar für Admin mit int-Id: 1
+2025-06-18 23:10:24.737 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-18 23:10:24.843 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-18 23:10:24.855 +02:00 [WRN] Löschen der News mit ID 999999 durch admin fehlgeschlagen: "NotFound"
+2025-06-18 23:10:25.092 +02:00 [WRN] Löschen der News mit ID -1 durch admin fehlgeschlagen: "NotFound"
+2025-06-18 23:33:59.413 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:33:59.413 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:33:59.450 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:33:59.413 +02:00 [WRN] IsAdminToVisibilityConverter.Convert: value ist kein string
+2025-06-18 23:33:59.414 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:33:59.413 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:33:59.413 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:33:59.413 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:33:59.414 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: admin
+2025-06-18 23:33:59.450 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:33:59.451 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-18 23:33:59.451 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:33:59.452 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-18 23:33:59.451 +02:00 [DBG] Rolle: User
+2025-06-18 23:33:59.452 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-18 23:33:59.451 +02:00 [WRN] Nicht genügend Werte übergeben an Converter.
+2025-06-18 23:33:59.452 +02:00 [INF] Benutzer ist kein Admin.
+2025-06-18 23:33:59.453 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: Admin
+2025-06-18 23:33:59.453 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: User
+2025-06-18 23:33:59.453 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-18 23:33:59.453 +02:00 [INF] Rolle ist nicht Admin: Sichtbarkeit = Collapsed
+2025-06-18 23:33:59.452 +02:00 [DBG] Sichtbar für Admin mit int-Id: 1
+2025-06-18 23:34:01.823 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-18 23:34:01.965 +02:00 [WRN] Löschen der News mit ID 999999 durch admin fehlgeschlagen: "NotFound"
+2025-06-18 23:34:02.031 +02:00 [WRN] Löschen der News mit ID -1 durch admin fehlgeschlagen: "NotFound"
+2025-06-18 23:34:02.043 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-18 23:42:17.671 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:42:17.671 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:42:17.671 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:42:17.671 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: Admin
+2025-06-18 23:42:17.718 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-18 23:42:17.671 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: admin
+2025-06-18 23:42:17.718 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-18 23:42:17.670 +02:00 [WRN] IsAdminToVisibilityConverter.Convert: value ist kein string
+2025-06-18 23:42:17.671 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:42:17.671 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-18 23:42:17.718 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:42:17.717 +02:00 [WRN] Nicht genügend Werte übergeben an Converter.
+2025-06-18 23:42:17.717 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:42:17.717 +02:00 [DBG] Rolle: User
+2025-06-18 23:42:17.718 +02:00 [DBG] Rolle: Admin
+2025-06-18 23:42:17.718 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-18 23:42:17.719 +02:00 [INF] Benutzer ist kein Admin.
+2025-06-18 23:42:17.719 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-18 23:42:17.719 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: User
+2025-06-18 23:42:17.719 +02:00 [INF] Rolle ist nicht Admin: Sichtbarkeit = Collapsed
+2025-06-18 23:42:17.719 +02:00 [DBG] Sichtbar für Admin mit int-Id: 1
+2025-06-18 23:42:20.067 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-18 23:42:20.195 +02:00 [WRN] Löschen der News mit ID 999999 durch admin fehlgeschlagen: "NotFound"
+2025-06-18 23:42:20.292 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-18 23:42:20.297 +02:00 [WRN] Löschen der News mit ID -1 durch admin fehlgeschlagen: "NotFound"
