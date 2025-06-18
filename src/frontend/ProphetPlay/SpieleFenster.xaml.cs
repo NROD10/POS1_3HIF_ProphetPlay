@@ -5,73 +5,122 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
+
 namespace ProphetPlay
 {
+    /// <summary>
+    /// Fenster zur Anzeige von Spielen einer bestimmten Liga.
+    /// Zeigt vergangene und kommende Spiele sowie Ligadetails wie Name, Land und Logo.
+    /// </summary>
     public partial class SpieleFenster : Window
     {
-        // Die ausgewählte Liga, z.B. Bundesliga
+
+        /// <summary>
+        /// Die aktuell ausgewählte Liga
+        /// </summary>
         private readonly LeaguesArticle _league;
 
+        /// <summary>
+        /// Erstellt ein neues Fenster zur Anzeige von Spielen der Liga
+        /// </summary>
+        /// <param name="league">Die Liga deren Spiele angezeigt werden sollen</param>
         public SpieleFenster(LeaguesArticle league)
         {
             InitializeComponent();
             _league = league;
 
-            // Überschriften und Logo anzeigen
+            LoggerService.Logger.Information("SpieleFenster geöffnet für Liga: {0} ({1})", league.LeagueName, league.LeagueId);
+
+            /// <summary>
+            /// UI mit Ligadetails füllen
+            /// </summary>
             ligen_ueberschrift_textblock.Text = league.LeagueName;
             land_ueberschrift_textblock.Text = league.CountryName;
             logo_image.Source = new BitmapImage(new Uri(league.LogoUrl));
 
-            // Sobald Fenster fertig geladen ist → Spiele laden
-            Loaded += async (_, __) => await LoadGamesAsync();
+            this.Loaded += async (sender, args) =>
+            {
+                await LoadGamesAsync();
+            };
         }
 
-        // Damit Scrollen mit der Maus auch funktioniert (z.B. wenn ScrollViewer benutzt wird)
+        /// <summary>
+        /// Ermöglicht vertikales Scrollen mit dem Mausrad
+        /// </summary>
         private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var scrollViewer = sender as ScrollViewer;
             if (scrollViewer != null)
             {
-                // Scrollen nach oben/unten je nach Mausrad
                 scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
                 e.Handled = true;
             }
         }
 
-        // Lädt vergangene und zukünftige Spiele
+        /// <summary>
+        /// Lädt vergangene und kommende Spiele der Liga aus der API
+        /// </summary>
         private async Task LoadGamesAsync()
         {
-            // 1) Letzte 5 vergangene Spiele der Liga abrufen
-            var past = await ApiFootballService.GetPastMatchesAsync(_league.LeagueId, _league.Season, last: 5);
+            LoggerService.Logger.Information("Lade Spiele für Liga: {0} ({1})", _league.LeagueName, _league.LeagueId);
 
-            // 2) Nächste 10 Spiele holen
-            var upcoming = await ApiFootballService.GetUpcomingMatchesAsync(_league.LeagueId, _league.Season, next: 10);
-
-            // Falls keine kommenden Spiele → Alternative: Spiele in den nächsten 30 Tagen
-            if (upcoming == null || !upcoming.Any())
+            try
             {
-                upcoming = await ApiFootballService.GetMatchesByDateRangeAsync(_league.LeagueId, _league.Season, days: 30);
+                /// <summary>
+                /// Vergangene 5 Spiele anzeigen
+                /// </summary>
+                var past = await ApiFootballService.GetPastMatchesAsync(_league.LeagueId, _league.Season, last: 5);
+
+                /// <summary>
+                /// Kommende 10 Spiele anzeigen
+                /// </summary>
+                var upcoming = await ApiFootballService.GetUpcomingMatchesAsync(_league.LeagueId, _league.Season, next: 10);
+
+                /// <summary>
+                /// Fallback: Spiele innerhalb von 30 Tagen falls keine vorhanden
+                /// </summary>
+                if (upcoming == null || !upcoming.Any())
+                {
+                    upcoming = await ApiFootballService.GetMatchesByDateRangeAsync(_league.LeagueId, _league.Season, days: 30);
+                }
+
+                /// <summary>
+                /// Liste anzeigen
+                /// </summary>
+                ListBoxPastSpiele.ItemsSource = past;
+                ListBoxLiveSpiele.ItemsSource = upcoming;
+
+                /// <summary>
+                /// Hinweis anzeigen falls keine Spiele vorhanden sind
+                /// </summary>
+                if (past.Any() || upcoming.Any())
+                {
+                    KeineSpieleTextBlock.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    KeineSpieleTextBlock.Visibility = Visibility.Visible;
+                }
+
+                LoggerService.Logger.Information("Spiele geladen für Liga: {0} - Vergangenheit: {1}, Zukunft: {2}",
+                    _league.LeagueName, past?.Count ?? 0, upcoming?.Count ?? 0);
             }
-
-            // 3) Daten anzeigen in den ListBoxen
-            ListBoxPastSpiele.ItemsSource = past;
-            ListBoxLiveSpiele.ItemsSource = upcoming;
-
-            // Wenn keine Spiele vorhanden sind → Hinweis anzeigen
-            KeineSpieleTextBlock.Visibility = (past.Any() || upcoming.Any())
-                                              ? Visibility.Collapsed
-                                              : Visibility.Visible;
+            catch (Exception ex)
+            {
+                LoggerService.Logger.Error(ex, "Fehler beim Laden der Spiele für Liga: {0}", _league.LeagueName);
+            }
         }
 
-        // Wenn auf ein Spiel doppelt geklickt wird (egal ob vergangen oder live)
+        /// <summary>
+        /// Öffnet ein neues Fenster mit Spiel-Details
+        /// </summary>
         private void ListBoxGame_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if ((sender as System.Windows.Controls.ListBox)?.SelectedItem is LiveMatchResponse match)
+            if ((sender as ListBox)?.SelectedItem is LiveMatchResponse match)
             {
-                // Neues Detailfenster für dieses Spiel öffnen
                 var detailFenster = new SpielDetailsWindow(match);
                 detailFenster.Show();
-                // jaja
+                LoggerService.Logger.Information("SpielDetailsWindow geöffnet für FixtureId: {0}", match.FixtureId);
             }
         }
     }

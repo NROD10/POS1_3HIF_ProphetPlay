@@ -27,57 +27,71 @@
 
         <!-- NEWS PANEL -->
         <Border Grid.Row="0" Grid.Column="0"
-                Background="#FF2A2A2A"
-                Margin="10" Padding="15" CornerRadius="10">
+        Background="#FF2A2A2A"
+        Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBlock Text="⚽ Fußball-News"
-                               FontSize="20" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="Fußball-News"
+                       FontSize="22" FontWeight="SemiBold" Foreground="White"/>
                     <Button Content="News erstellen"
-                            Margin="12,0,0,0" Padding="6,2"
-                            Background="#FF4CAF50" Foreground="White"
-                            Visibility="{Binding AktuelleRolle, Converter={StaticResource IsAdminToVisibilityConverter}}"
-                            Click="BtnCreateNews_Click"/>
+                    Margin="12,0,0,0" Padding="6,2"
+                    Background="#FF4CAF50" Foreground="White"
+                    Visibility="{Binding AktuelleRolle, Converter={StaticResource IsAdminToVisibilityConverter}}"
+                    Click="BtnCreateNews_Click"/>
                 </StackPanel>
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Auto" Height="600">
-                    <ListBox x:Name="NewsListBox"
-                             Background="#FF383838" BorderThickness="0" Foreground="White"
-                             MouseDoubleClick="NewsListBox_MouseDoubleClick">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Margin="0,0,0,8" Padding="8"
-                                        Background="#FF232323" CornerRadius="6"
-                                        BorderBrush="#FF4CAF50" BorderThickness="1">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0"
-                                                   Text="{Binding Title}"
-                                                   FontSize="14" Foreground="White"
-                                                   TextWrapping="Wrap" MaxWidth="240"/>
-                                        <Button Grid.Column="1"
-                                                Content="Löschen"
-                                                Margin="8,0,0,0" Padding="4,2"
-                                                Background="#FFD32F2F" Foreground="White"
-                                                Click="NewsDeleteButton_Click"
-                                                Tag="{Binding Id}">
-                                            <Button.Visibility>
-                                                <MultiBinding Converter="{StaticResource AdminAndLocalToVisibilityConverter}">
-                                                    <Binding Path="DataContext.AktuelleRolle"
-                                                             RelativeSource="{RelativeSource AncestorType=Window}"/>
-                                                    <Binding Path="Id"/>
-                                                </MultiBinding>
-                                            </Button.Visibility>
-                                        </Button>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </ScrollViewer>
+
+                <!-- Kein ScrollViewer mehr hier! -->
+                <ListBox x:Name="NewsListBox"
+                 Height="600"
+                 Background="#FF383838"
+                 BorderThickness="0"
+                 Foreground="White"
+                 FontSize="14"
+                 MouseDoubleClick="LeagueButton_Click"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" SelectionChanged="NewsListBox_SelectionChanged">
+
+                    <!-- Dünne Scrollbar -->
+                    <ListBox.Resources>
+                        <Style TargetType="ScrollBar">
+                            <Setter Property="Width" Value="6"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,8" Padding="8"
+                            Background="#FF232323" CornerRadius="6"
+                            BorderBrush="#FF4CAF50" BorderThickness="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0"
+                                       Text="{Binding Title}"
+                                       FontSize="14" Foreground="White"
+                                       TextWrapping="Wrap" MaxWidth="240"/>
+                                    <Button Grid.Column="1"
+                                    Content="Löschen"
+                                    Margin="8,0,0,0" Padding="4,2"
+                                    Background="#FFD32F2F" Foreground="White"
+                                    Click="NewsDeleteButton_Click"
+                                    Tag="{Binding Id}">
+                                        <Button.Visibility>
+                                            <MultiBinding Converter="{StaticResource AdminAndLocalToVisibilityConverter}">
+                                                <Binding Path="DataContext.AktuelleRolle"
+                                                 RelativeSource="{RelativeSource AncestorType=Window}"/>
+                                                <Binding Path="Id"/>
+                                            </MultiBinding>
+                                        </Button.Visibility>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
         </Border>
 
@@ -88,80 +102,131 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="35"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="📡 Liveticker"
+                <TextBlock Grid.Row="0" Text="Liveticker"
                            FontSize="22" FontWeight="Bold"
                            Foreground="White" Margin="0,0,0,10"/>
+
+                <!-- Suchfeld -->
                 <TextBox Grid.Row="1" x:Name="TextBoxLeaguen" Margin="0,0,0,10"
                          Text="🔍 search ..." Foreground="Gray"
                          GotFocus="TextBoxLeaguen_GotFocus"
                          LostFocus="TextBoxLeaguen_LostFocus"
                          TextChanged="TextBoxLeaguen_TextChanged"/>
-                <ListBox Grid.Row="2" x:Name="ListBoxLeaguen"
-                         Background="#FF383838" Foreground="White" BorderThickness="0"
-                         HorizontalContentAlignment="Stretch">
+
+                <!-- Ligenliste -->
+                <ListBox Grid.Row="3"
+         x:Name="ListBoxLeaguen"
+         Margin="0"
+         Background="#FF383838"
+         Foreground="White"
+         BorderThickness="0"
+         HorizontalContentAlignment="Stretch"
+         SelectionMode="Single"
+         ScrollViewer.VerticalScrollBarVisibility="Auto"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListBox.Resources>
+                        <!-- Dünne Scrollbar -->
+                        <Style TargetType="ScrollBar">
+                            <Setter Property="Width" Value="6"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </ListBox.Resources>
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Button Click="LeagueButton_Click"
-                                    Background="#FF232323"
-                                    BorderBrush="#FF4CAF50"
-                                    BorderThickness="1"
-                                    Padding="10" Margin="0,0,0,10"
-                                    Cursor="Hand">
+                    BorderThickness="1"
+                    Padding="10"
+                    Margin="0,0,0,10"
+                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="4"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#FF2E7D32"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#FF66BB6A"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Button.Template>
+
+                                <Button.Background>#FF232323</Button.Background>
+                                <Button.BorderBrush>#FF4CAF50</Button.BorderBrush>
+
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <Image Source="{Binding LogoUrl}"
-                                           Width="30" Height="30"
-                                           Margin="0,0,10,0"/>
+                           Width="30" Height="30"
+                           Margin="0,0,10,0"/>
                                     <StackPanel>
                                         <TextBlock Text="{Binding LeagueName}"
-                                                   FontWeight="Bold" Foreground="White"/>
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
                                         <TextBlock Text="{Binding CountryName}"
-                                                   FontStyle="Italic" Foreground="LightGray"/>
+                                   FontStyle="Italic"
+                                   Foreground="LightGray"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Button>
+
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
         </Border>
 
-        <!-- USER/ADMIN PANEL -->
-        <Border Grid.Row="0" Grid.Column="2"
-                Background="#FF2A2A2A"
-                Margin="10" Padding="15" CornerRadius="10">
+        <!-- GRUPPEN PANEL -->
+        <Border Grid.Column="2" Background="#FF2A2A2A" Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
-                <TextBlock Text="👥 User"
-                           FontSize="22" FontWeight="Bold"
-                           Foreground="White" Margin="0,0,0,10"/>
+                <TextBlock Text="Klub-WM Favoriten"
+                               FontSize="22" FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,0,0,10"/>
+
                 <ListBox Background="#FF383838"
-                         Foreground="White" BorderThickness="0">
-                    <ListBoxItem Content="User A"/>
-                    <ListBoxItem Content="User B"/>
+                             Foreground="White"
+                             BorderThickness="0"
+                             FontSize="16"
+                             Padding="5"
+                             Margin="0,30,0,30">
+                    <ListBoxItem Content="Real Madrid" HorizontalAlignment="Center"/>
+                    <ListBoxItem Content="Inter Miami" HorizontalAlignment="Center"/>
+                    <ListBoxItem Content="Bayern München" HorizontalAlignment="Center"/>
+                    <ListBoxItem Content="Manchester City" HorizontalAlignment="Center"/>
+                    <ListBoxItem Content="Paris Saint German" HorizontalAlignment="Center"/>
                 </ListBox>
-                <Button Content="Gruppe verwalten"
-                        Margin="0,10,0,20" Width="160" Height="35"
-                        Background="#FF2196F3" Foreground="White"
-                        FontWeight="Bold"/>
+
                 <StackPanel x:Name="AdminPanel" Visibility="Collapsed">
                     <TextBlock Text="Alle Benutzer (Admin)"
-                               FontSize="18" FontWeight="SemiBold"
-                               Foreground="White" Margin="0,0,0,5"/>
+                                   FontSize="18" FontWeight="SemiBold"
+                                   Foreground="White"
+                                   Margin="0,0,0,5"/>
                     <ItemsControl ItemsSource="{Binding BenutzerListe}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,2">
                                     <TextBlock Text="{Binding benutzername}"
-                                               Foreground="White" Width="120"/>
+                                                   Foreground="White"
+                                                   Width="120"/>
                                     <Button Content="Löschen"
-                                            Click="LoeschenButton_Click"
-                                            Tag="{Binding benutzername}"
-                                            Background="#FFD32F2F"
-                                            Foreground="White"
-                                            Width="70" Height="22"
-                                            FontSize="12"/>
+                                                Click="LoeschenButton_Click"
+                                                Tag="{Binding benutzername}"
+                                                Background="#FFD32F2F"
+                                                Foreground="White"
+                                                Width="70" Height="22"
+                                                FontSize="12"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -170,16 +235,40 @@
             </StackPanel>
         </Border>
 
-        <!-- Abmelden-Button -->
         <Grid Grid.Row="1" Grid.ColumnSpan="3">
             <Button Content="Abmelden"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="10" Padding="10,5"
-                    Width="100"
-                    Background="#FFD32F2F"
-                    Foreground="White"
-                    Click="AbmeldenButton_Click"/>
+        HorizontalAlignment="Right"
+        VerticalAlignment="Bottom"
+        Margin="10"
+        Padding="10,5"
+        Width="100"
+        Foreground="White"
+        Click="AbmeldenButton_Click">
+
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Margin="4"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!-- Dunkelrot beim Hover -->
+                                <Setter TargetName="border" Property="Background" Value="darkred"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#FFEF5350"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Background>#FFD32F2F</Button.Background>
+                <Button.BorderBrush>#FFD32F2F</Button.BorderBrush>
+            </Button>
+
         </Grid>
     </Grid>
 </Window>
