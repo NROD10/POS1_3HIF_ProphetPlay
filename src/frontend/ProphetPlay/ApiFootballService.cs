@@ -36,6 +36,7 @@ public static class ApiFootballService
             article.LogoUrl = x.League.Logo;
             article.CountryName = x.Country.Name;
 
+            // Prompt (ChatGPT): "Wähle aktuelle Saison oder die höchste vorhandene."
             int seasonYear = DateTime.UtcNow.Year;
 
             if (x.Seasons != null)
@@ -78,6 +79,7 @@ public static class ApiFootballService
 
     public static async Task<List<LiveMatchResponse>> GetUpcomingMatchesAsync(int leagueId, int season, int next = 10)
     {
+        // Prompt (ChatGPT): "Logge URL und JSON bei kommenden Spielen."
         string url = $"https://v3.football.api-sports.io/fixtures" +
                      $"?league={leagueId}" +
                      $"&season={season}" +
@@ -101,6 +103,8 @@ public static class ApiFootballService
 
     public static async Task<List<LiveMatchResponse>> GetPastMatchesAsync(int leagueId, int season, int last = 10)
     {
+
+        // Prompt: Hol mir die vergangenen Live Matches aus der API
         string url = $"https://v3.football.api-sports.io/fixtures" +
                      $"?league={leagueId}" +
                      $"&season={season}" +
@@ -151,6 +155,8 @@ public static class ApiFootballService
 
     public static async Task<List<FixtureEvent>> GetFixtureEventsAsync(int fixtureId)
     {
+
+        // Schreibe eine methode die Spielereignisse von der api abruft
         string url = $"https://v3.football.api-sports.io/fixtures/events?fixture={fixtureId}";
         LoggerService.Logger.Information("GetFixtureEventsAsync mit Spiel-ID {0} aufgerufen.", fixtureId);
         var json = await _client.GetStringAsync(url);

@@ -15,6 +15,9 @@ namespace ProphetPlay
     /// Stellt das Login-Fenster des Programms dar
     /// Wird beim Start des Programms angezeigt und ermöglicht Benutzern die Anmeldung
     /// </summary>
+    /// 
+    // Prompt: "Erstell mir ein WPF-Login-Fenster mit Username- und Passwort-Feld und nem Button, der die Daten per HTTP-Post zum Backend schickt und bei erfolgreichem Login das MainWindow aufmacht"
+
     public partial class LoginWindow : Window
     {
 
@@ -39,6 +42,8 @@ namespace ProphetPlay
         /// Wird aufgerufen wenn der Benutzer auf den Einloggen-Button klickt
         /// Sendet die Anmeldedaten an das Backend, prüft die Antwort und öffnet das Hauptfenster bei Erfolg
         /// </summary>
+
+        // Prompt: schreib jetzt die LoginButton_Click-Methode, die user und passwort, ans API schickt und Fehlermeldung anzeigt"
         private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             // Anmeldedaten aus Eingabefeldern lesen

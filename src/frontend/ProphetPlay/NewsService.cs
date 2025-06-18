@@ -105,6 +105,8 @@ namespace ProphetPlay
         /// <param name="id">ID des zu löschenden News-Artikels</param>
         /// <param name="requester">Benutzername des Anfragenden</param>
         /// <returns>True wenn erfolgreich gelöscht</returns>
+        /// 
+            // Prompt: "DeleteNewsAsync: DELETE /api/news?id=&requester= und gib true/false zurück"
         public static async Task<bool> DeleteNewsAsync(int id, string requester)
         {
             using var client = new HttpClient { BaseAddress = new Uri("http://localhost:8080/") };

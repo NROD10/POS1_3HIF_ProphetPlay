@@ -8,6 +8,8 @@ namespace ProphetPlay
     /// <summary>
     /// Zeigt ein Element nur dann an wenn die übergebene Rolle Admin ist
     /// </summary>
+    /// 
+    // Prompt: "der ‘News erstellen’-Button soll nur da sein wenn der Benutzer Admin ist"
     public class IsAdminToVisibilityConverter : IValueConverter
     {
         // value: AktuelleRolle (string)

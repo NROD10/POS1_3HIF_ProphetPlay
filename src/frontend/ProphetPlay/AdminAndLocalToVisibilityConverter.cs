@@ -11,6 +11,7 @@ namespace ProphetPlay
     /// </summary>
     public class AdminAndLocalToVisibilityConverter : IMultiValueConverter
     {
+        // Prompt (ChatGPT): "Schreibe einen Converter, der nur für Admins UND eigene News sichtbar ist."
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             LoggerService.Logger.Information("AdminAndLocalToVisibilityConverter.Convert aufgerufen.");

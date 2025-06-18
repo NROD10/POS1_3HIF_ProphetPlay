@@ -24,6 +24,9 @@ namespace ProphetPlay
         /// Erstellt ein neues Fenster zur Anzeige von Spielen der Liga
         /// </summary>
         /// <param name="league">Die Liga deren Spiele angezeigt werden sollen</param>
+        /// 
+
+        // prompt: "bau constructor so, dass Header, Land und Logo angezeigt werden und dann automatisch Spiele geladen werden"
         public SpieleFenster(LeaguesArticle league)
         {
             InitializeComponent();

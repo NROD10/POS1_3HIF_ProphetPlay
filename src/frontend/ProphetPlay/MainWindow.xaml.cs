@@ -72,6 +72,8 @@ namespace ProphetPlay
         /// <summary>
         /// Lädt interne und externe Fußball-News und zeigt sie in der NewsListBox an
         /// </summary>
+        /// 
+        // Prompt: "LoadNewsAsync: kombiniere interne News und externe Fußball-News und zeig sie in der ListBox an"
         private async Task LoadNewsAsync()
         {
             try
@@ -94,6 +96,9 @@ namespace ProphetPlay
         /// <summary>
         /// Lädt die Liste aller verfügbaren Ligen von der API und zeigt sie im UI an
         /// </summary>
+        /// 
+        // Prompt: "LoadLeaguesAsync: ruf Ligen von ApiFootballService ab, speicher in alleLigen und gefilterteLigen und bind ListBox"
+
         private async Task LoadLeaguesAsync()
         {
             try
@@ -116,6 +121,8 @@ namespace ProphetPlay
         /// Lädt die Benutzerliste vom Server die nur für Admins sichtbar ist
         /// </summary>
         /// <param name="requester">Der Benutzername des aktuellen Admins</param>
+        /// 
+        // Prompt: "LadeBenutzerListeAsync: hol alle Benutzer vom Backend, nur Admins dürfen das
         private async Task LadeBenutzerListeAsync(string requester)
         {
             LoggerService.Logger.Information("Lade Benutzerliste für Admin: {0}", requester);
@@ -225,6 +232,9 @@ namespace ProphetPlay
         /// <summary>
         /// Löscht einen Admin-Benutzer nach Bestätigung
         /// </summary>
+        /// 
+
+        // Prompt: "LoeschenButton_Click: lösche Admin-Benutzer nach Bestätigung
         private async void LoeschenButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn && btn.Tag is string target)
