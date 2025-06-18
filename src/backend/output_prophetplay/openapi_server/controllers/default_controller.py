@@ -28,6 +28,7 @@ SUPABASE_HEADERS = {
 ## @brief Registriert einen neuen Benutzer, sofern der Benutzername noch nicht existiert.
 #  @param body Dictionary mit Benutzername, Passwort und Rollen-ID (RegisterRequest).
 #  @return Tuple mit Nachricht und HTTP-Statuscode.
+#
 def api_benutzer_register_post(body):
     logger.info("api_benutzer_register_post called with body=%s", body)
     try:
@@ -71,6 +72,8 @@ def api_benutzer_register_post(body):
 ## @brief Authentifiziert einen Benutzer anhand von Benutzername und Passwort.
 #  @param body Dictionary mit Benutzername und Passwort (LoginRequest).
 #  @return Dictionary mit Benutzername und Rollenname oder Fehlermeldung mit HTTP-Statuscode.
+#
+#  ChatGPT-Prompt: "ok, jetzt  login-endpunkt, nimm benutzername+passwort, check db, gib rolle zurück"
 def api_benutzer_login_post(body):
     logger.info("api_benutzer_login_post called with body=%s", body)
     try:
@@ -121,6 +124,7 @@ def api_benutzer_login_post(body):
 
 ## @brief Gibt eine Liste aller Benutzer zurück. Nur für Admins (role_id = 1).
 #  @return JSON-Array der Benutzer oder Fehlermeldung mit Statuscode.
+#
 def api_benutzer_liste_get():
     requester = request.args.get("requester")
     logger.info("api_benutzer_liste_get called, requester=%s", requester)
@@ -156,6 +160,7 @@ def api_benutzer_liste_get():
 
 ## @brief Löscht einen Benutzer anhand seines Benutzernamens. Nur für Admins.
 #  @return Nachricht mit HTTP-Statuscode.
+#
 def api_benutzer_loeschen_delete():
     requester, target = request.args.get("requester"), request.args.get("target")
     logger.info("api_benutzer_loeschen_delete called, requester=%s, target=%s", requester, target)
@@ -191,6 +196,8 @@ def api_benutzer_loeschen_delete():
 
 ## @brief Holt alle News-Einträge aus der Datenbank.
 #  @return JSON-Array der News-Einträge oder Fehlermeldung.
+#
+#  ChatGPT-Prompt: "hol mir alle news aus der db, sortier nach datum"
 def api_news_get():
     logger.info("api_news_get called")
     try:
@@ -212,6 +219,8 @@ def api_news_get():
 ## @brief Erstellt einen neuen News-Eintrag mit Zeitstempel und Ersteller.
 #  @param body JSON-Objekt mit Titel, Inhalt, etc.
 #  @return Nachricht mit HTTP-Statuscode.
+#
+#  ChatGPT-Prompt: "schreib news anlegen endpoint, timestamp und wer es macht rein"
 def api_news_post(body):
     logger.info("api_news_post called with body=%s", body)
     try:
@@ -238,6 +247,8 @@ def api_news_post(body):
 
 ## @brief Löscht einen News-Eintrag, wenn der Benutzer Admin oder Ersteller ist.
 #  @return Nachricht mit HTTP-Statuscode.
+#
+#  ChatGPT-Prompt: "löschen news nur wenn admin oder der sie erstellt hat"
 def api_news_delete():
     news_id = request.args.get("id")
     requester = request.args.get("requester")
