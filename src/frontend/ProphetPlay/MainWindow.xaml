@@ -31,8 +31,10 @@
         Margin="10" Padding="15" CornerRadius="10">
             <StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <TextBlock Text="Fußball-News"
+                    <TextBlock Text="Fußball"
                        FontSize="22" FontWeight="SemiBold" Foreground="White"/>
+                    <TextBlock Text="-News"
+                       FontSize="22" FontWeight="SemiBold" Foreground="LawnGreen"/>
                     <Button Content="News erstellen"
                     Margin="12,0,0,0" Padding="6,2"
                     Background="#FF4CAF50" Foreground="White"
@@ -105,9 +107,12 @@
                     <RowDefinition Height="35"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Liveticker"
+                <TextBlock Grid.Row="0" Text="Live"
                            FontSize="22" FontWeight="Bold"
                            Foreground="White" Margin="0,0,0,10"/>
+                <TextBlock Grid.Row="0" Text="ticker"
+                           FontSize="22" FontWeight="Bold"
+                           Foreground="LightSkyBlue" Margin="44,0,-44,10"/>
 
                 <!-- Suchfeld -->
                 <TextBox Grid.Row="1" x:Name="TextBoxLeaguen" Margin="0,0,0,10"
@@ -192,7 +197,7 @@
             <StackPanel>
                 <TextBlock Text="Klub-WM Favoriten"
                                FontSize="22" FontWeight="Bold"
-                               Foreground="White"
+                               Foreground="Orange"
                                Margin="0,0,0,10"/>
 
                 <ListBox Background="#FF383838"
