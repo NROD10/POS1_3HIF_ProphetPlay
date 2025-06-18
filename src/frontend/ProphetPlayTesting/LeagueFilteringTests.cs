@@ -16,6 +16,9 @@ namespace ProphetPlayTesting
             new() { LeagueName = "Serie A",        CountryName = "Italien"      },
         };
 
+
+        // Für Unitests allgemein größteils Chatgpt verwendet
+
         [TestMethod]
         public void EmptyQuery_ReturnsAllLeagues()
         {

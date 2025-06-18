@@ -7,6 +7,10 @@ namespace ProphetPlayTesting
     [TestClass]
     public class VisibilityConverterTests
     {
+
+
+        // Für Unitests allgemein größteils Chatgpt verwendet
+
         private readonly IsAdminToVisibilityConverter _isAdmin = new();
         private readonly AdminAndLocalToVisibilityConverter _adminAndLocal = new();
 

@@ -13,6 +13,10 @@ namespace ProphetPlayTesting
         /// <summary>
         /// Wenn null hereinkommt, darf kein Exception fliegen, sondern es soll Collapsed zurückkommen.
         /// </summary>
+        /// 
+
+
+        // Für Unitests allgemein größteils Chatgpt verwendet
         [TestMethod]
         public void IsAdminToVisibilityConverter_NullInput_ReturnsCollapsed()
         {

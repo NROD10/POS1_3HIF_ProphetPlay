@@ -1,0 +1,25 @@
+2025-06-19 00:46:42.785 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-19 00:46:42.785 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-19 00:46:42.849 +02:00 [DBG] Rolle: Admin
+2025-06-19 00:46:42.785 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-19 00:46:42.785 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-19 00:46:42.851 +02:00 [DBG] Rolle: User
+2025-06-19 00:46:42.785 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: admin
+2025-06-19 00:46:42.785 +02:00 [WRN] IsAdminToVisibilityConverter.Convert: value ist kein string
+2025-06-19 00:46:42.785 +02:00 [INF] AdminAndLocalToVisibilityConverter.Convert aufgerufen.
+2025-06-19 00:46:42.850 +02:00 [DBG] Rolle: Admin
+2025-06-19 00:46:42.850 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-19 00:46:42.851 +02:00 [WRN] Nicht genügend Werte übergeben an Converter.
+2025-06-19 00:46:42.785 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: Admin
+2025-06-19 00:46:42.851 +02:00 [INF] Benutzer ist kein Admin.
+2025-06-19 00:46:42.851 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-19 00:46:42.852 +02:00 [DBG] Rolle: Admin
+2025-06-19 00:46:42.852 +02:00 [INF] Rolle ist Admin: Sichtbarkeit = Visible
+2025-06-19 00:46:42.853 +02:00 [INF] ID nicht gültig oder kleiner gleich 0.
+2025-06-19 00:46:42.854 +02:00 [INF] IsAdminToVisibilityConverter.Convert aufgerufen mit Rolle: User
+2025-06-19 00:46:42.854 +02:00 [INF] Rolle ist nicht Admin: Sichtbarkeit = Collapsed
+2025-06-19 00:46:42.852 +02:00 [DBG] Sichtbar für Admin mit int-Id: 1
+2025-06-19 00:46:45.279 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-19 00:46:45.399 +02:00 [WRN] Löschen der News mit ID -1 durch admin fehlgeschlagen: "NotFound"
+2025-06-19 00:46:45.498 +02:00 [INF] Alle News von lokaler API geladen.
+2025-06-19 00:46:45.508 +02:00 [WRN] Löschen der News mit ID 999999 durch admin fehlgeschlagen: "NotFound"

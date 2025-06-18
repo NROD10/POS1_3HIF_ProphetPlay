@@ -9,6 +9,9 @@ namespace ProphetPlayTesting
     [TestClass]
     public class NewsServiceTests
     {
+
+        // Für Unitests allgemein größteils Chatgpt verwendet
+
         [TestMethod]
         public async Task GetAllNewsAsync_ReturnsNonNullList()
         {

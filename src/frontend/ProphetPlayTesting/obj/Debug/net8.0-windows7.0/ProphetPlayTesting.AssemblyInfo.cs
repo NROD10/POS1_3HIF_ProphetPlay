@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ProphetPlayTesting")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+744d8106a3c95fa25325645ba32df3f1e2003d9b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c442018159ae1026f84f9b18f3885432f2c03813")]
 [assembly: System.Reflection.AssemblyProductAttribute("ProphetPlayTesting")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ProphetPlayTesting")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
