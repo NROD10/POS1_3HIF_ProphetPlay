@@ -1,4 +1,10 @@
-# default_controller.py
+## @file default_controller.py
+#  @brief API-Endpunkte für Benutzer- und News-Verwaltung.
+#  @details Dieses Modul stellt REST-API-Endpunkte zur Verfügung, um Benutzer zu registrieren, anzumelden,
+#  aufzulisten und zu löschen sowie News-Einträge zu erstellen, abzurufen und zu löschen. Die Daten werden über Supabase verwaltet.
+
+## @package default_controller
+#  @brief Modul zur Benutzer- und News-Verwaltung mithilfe von Supabase als Datenbank-Backend.
 
 import requests
 from datetime import datetime
@@ -19,11 +25,13 @@ SUPABASE_HEADERS = {
 }
 
 
+## @brief Registriert einen neuen Benutzer, sofern der Benutzername noch nicht existiert.
+#  @param body Dictionary mit Benutzername, Passwort und Rollen-ID (RegisterRequest).
+#  @return Tuple mit Nachricht und HTTP-Statuscode.
 def api_benutzer_register_post(body):
     logger.info("api_benutzer_register_post called with body=%s", body)
     try:
         body = RegisterRequest.from_dict(body)
-        # Existenz prüfen
         query_url = f"{SUPABASE_URL}/rest/v1/users?benutzername=eq.{body.benutzername}"
         logger.debug("Checking existing user via %s", query_url)
         check_resp = requests.get(query_url, headers=SUPABASE_HEADERS)
@@ -35,11 +43,9 @@ def api_benutzer_register_post(body):
             logger.warning("Register failed: username %s already exists", body.benutzername)
             return "Benutzername existiert bereits", 409
 
-        # Passwort hashen
         hashed = crypto.hash(body.passwort)
         logger.debug("Password hashed for user %s", body.benutzername)
 
-        # Neuer Benutzer anlegen
         insert_url = f"{SUPABASE_URL}/rest/v1/users"
         payload = {
             "benutzername": body.benutzername,
@@ -62,13 +68,15 @@ def api_benutzer_register_post(body):
         return "Fehler bei Registrierung", 500
 
 
+## @brief Authentifiziert einen Benutzer anhand von Benutzername und Passwort.
+#  @param body Dictionary mit Benutzername und Passwort (LoginRequest).
+#  @return Dictionary mit Benutzername und Rollenname oder Fehlermeldung mit HTTP-Statuscode.
 def api_benutzer_login_post(body):
     logger.info("api_benutzer_login_post called with body=%s", body)
     try:
         body = LoginRequest.from_dict(body)
         benutzername, passwort = body.benutzername, body.passwort
 
-        # 1) Benutzerdaten abrufen
         users_url = (
             f"{SUPABASE_URL}/rest/v1/users"
             f"?select=benutzername,passwort,role_id"
@@ -92,7 +100,6 @@ def api_benutzer_login_post(body):
             logger.warning("Login failed: invalid password for user %s", benutzername)
             return "Ungültige Anmeldedaten", 401
 
-        # 2) Rollennamen abrufen
         role_url = f"{SUPABASE_URL}/rest/v1/rollen?select=name&id=eq.{role_id}"
         logger.debug("Fetching role name via %s", role_url)
         role_resp = requests.get(role_url, headers=SUPABASE_HEADERS)
@@ -112,11 +119,12 @@ def api_benutzer_login_post(body):
         return "Fehler bei Anmeldung", 500
 
 
+## @brief Gibt eine Liste aller Benutzer zurück. Nur für Admins (role_id = 1).
+#  @return JSON-Array der Benutzer oder Fehlermeldung mit Statuscode.
 def api_benutzer_liste_get():
     requester = request.args.get("requester")
     logger.info("api_benutzer_liste_get called, requester=%s", requester)
     try:
-        # Admin-Check
         user_url = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
         logger.debug("Checking admin rights via %s", user_url)
         user_resp = requests.get(user_url, headers=SUPABASE_HEADERS)
@@ -130,7 +138,6 @@ def api_benutzer_liste_get():
             logger.warning("Unauthorized access to user list by %s", requester)
             return "Nicht autorisiert", 403
 
-        # Alle Benutzer abrufen
         all_users_url = f"{SUPABASE_URL}/rest/v1/users?select=benutzername,role_id"
         logger.debug("Fetching all users via %s", all_users_url)
         all_users_resp = requests.get(all_users_url, headers=SUPABASE_HEADERS)
@@ -147,11 +154,12 @@ def api_benutzer_liste_get():
         return "Serverfehler", 500
 
 
+## @brief Löscht einen Benutzer anhand seines Benutzernamens. Nur für Admins.
+#  @return Nachricht mit HTTP-Statuscode.
 def api_benutzer_loeschen_delete():
     requester, target = request.args.get("requester"), request.args.get("target")
     logger.info("api_benutzer_loeschen_delete called, requester=%s, target=%s", requester, target)
     try:
-        # Admin-Check
         check_url = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
         logger.debug("Checking admin rights via %s", check_url)
         check_resp = requests.get(check_url, headers=SUPABASE_HEADERS)
@@ -164,7 +172,6 @@ def api_benutzer_loeschen_delete():
             logger.warning("Unauthorized delete user attempt by %s", requester)
             return "Nicht autorisiert", 403
 
-        # Löschen
         delete_url = f"{SUPABASE_URL}/rest/v1/users?benutzername=eq.{target}"
         logger.debug("Deleting user via %s", delete_url)
         delete_headers = {**SUPABASE_HEADERS, "Prefer": "return=minimal"}
@@ -182,6 +189,8 @@ def api_benutzer_loeschen_delete():
         return "Serverfehler", 500
 
 
+## @brief Holt alle News-Einträge aus der Datenbank.
+#  @return JSON-Array der News-Einträge oder Fehlermeldung.
 def api_news_get():
     logger.info("api_news_get called")
     try:
@@ -200,6 +209,9 @@ def api_news_get():
         return "Serverfehler", 500
 
 
+## @brief Erstellt einen neuen News-Eintrag mit Zeitstempel und Ersteller.
+#  @param body JSON-Objekt mit Titel, Inhalt, etc.
+#  @return Nachricht mit HTTP-Statuscode.
 def api_news_post(body):
     logger.info("api_news_post called with body=%s", body)
     try:
@@ -224,6 +236,8 @@ def api_news_post(body):
         return "Serverfehler", 500
 
 
+## @brief Löscht einen News-Eintrag, wenn der Benutzer Admin oder Ersteller ist.
+#  @return Nachricht mit HTTP-Statuscode.
 def api_news_delete():
     news_id = request.args.get("id")
     requester = request.args.get("requester")
@@ -233,7 +247,6 @@ def api_news_delete():
             logger.warning("Missing parameters for news delete")
             return "Fehlende Parameter", 400
 
-        # 1) Admin-Check
         user_url = f"{SUPABASE_URL}/rest/v1/users?select=role_id&benutzername=eq.{requester}"
         logger.debug("Checking admin rights via %s", user_url)
         user_resp = requests.get(user_url, headers=SUPABASE_HEADERS)
@@ -247,7 +260,6 @@ def api_news_delete():
             logger.warning("Unauthorized news delete attempt by %s", requester)
             return "Nicht autorisiert", 403
 
-        # 2) Ownership-Check
         check_url = (
             f"{SUPABASE_URL}/rest/v1/news"
             f"?select=created_by"
@@ -268,7 +280,6 @@ def api_news_delete():
             logger.warning("User %s is not owner of news %s", requester, news_id)
             return "Nicht autorisiert", 403
 
-        # 3) Löschen
         delete_url = f"{SUPABASE_URL}/rest/v1/news?id=eq.{news_id}"
         logger.debug("Deleting news via %s", delete_url)
         delete_headers = {**SUPABASE_HEADERS, "Prefer": "return=minimal"}
