@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ProphetPlay.SpielDetailsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Spieldetails" Height="600" Width="400"
+        Title="Spieldetails" Height="600" Width="500"
         Background="#FF1E1E1E" WindowStartupLocation="CenterScreen">
     <Grid Margin="10">
         <StackPanel>
