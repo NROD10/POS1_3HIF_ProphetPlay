@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  description: "REST API für Login, Registrierung und Spielinteraktion"
+  description: "REST API für Login, Registrierung, Benutzerverwaltung und News-Management."
   title: ProphetPlay API
   version: 1.0.0
 
@@ -12,6 +12,7 @@ paths:
   /api/benutzer/register:
     post:
       summary: Registrierung eines neuen Benutzers
+      description: Erstellt einen neuen Benutzer mit Benutzername, Passwort und Rollen-ID.
       operationId: openapi_server.controllers.default_controller.api_benutzer_register_post
       requestBody:
         required: true
@@ -19,6 +20,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
+            example:
+              benutzername: max.mustermann
+              passwort: geheim123
+              role_id: 2
       responses:
         "200": { description: Registrierung erfolgreich }
         "409": { description: Benutzername existiert bereits }
@@ -27,6 +32,7 @@ paths:
   /api/benutzer/login:
     post:
       summary: Login eines Benutzers
+      description: Authentifiziert einen Benutzer anhand von Benutzername und Passwort.
       operationId: openapi_server.controllers.default_controller.api_benutzer_login_post
       requestBody:
         required: true
@@ -34,6 +40,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LoginRequest'
+            example:
+              benutzername: max.mustermann
+              passwort: geheim123
       responses:
         "200":
           description: Login erfolgreich
@@ -41,12 +50,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
+              example:
+                benutzername: max.mustermann
+                rolle: Admin
         "401": { description: Ungültige Anmeldedaten }
         "500": { description: Serverfehler }
 
   /api/benutzer/liste:
     get:
       summary: Liste aller Benutzer (nur Admin)
+      description: Gibt eine Liste aller registrierten Benutzer zurück. Nur Admins haben Zugriff.
       operationId: openapi_server.controllers.default_controller.api_benutzer_liste_get
       parameters:
         - name: requester
@@ -54,6 +67,8 @@ paths:
           required: true
           schema:
             type: string
+          description: Benutzername des anfragenden Admins
+          example: admin.user
       responses:
         "200":
           description: Benutzerliste
@@ -63,12 +78,23 @@ paths:
                 type: array
                 items:
                   type: object
+                  properties:
+                    benutzername:
+                      type: string
+                    rolle:
+                      type: string
+              example:
+                - benutzername: max.mustermann
+                  rolle: Benutzer
+                - benutzername: admin.user
+                  rolle: Admin
         "403": { description: Nicht autorisiert }
         "500": { description: Serverfehler }
 
   /api/benutzer/loeschen:
     delete:
       summary: Benutzer löschen (nur Admin)
+      description: Löscht einen Benutzer dauerhaft aus dem System. Nur Admins dürfen diese Aktion ausführen.
       operationId: openapi_server.controllers.default_controller.api_benutzer_loeschen_delete
       parameters:
         - name: requester
@@ -76,11 +102,15 @@ paths:
           required: true
           schema:
             type: string
+          description: Benutzername des Admins, der löscht
+          example: admin.user
         - name: target
           in: query
           required: true
           schema:
             type: string
+          description: Benutzername des zu löschenden Nutzers
+          example: max.mustermann
       responses:
         "200": { description: Benutzer gelöscht }
         "403": { description: Nicht autorisiert }
@@ -89,6 +119,7 @@ paths:
   /api/news:
     get:
       summary: Alle News (öffentlich)
+      description: Gibt alle gespeicherten Newsartikel zurück. Öffentlich zugänglich.
       operationId: openapi_server.controllers.default_controller.api_news_get
       responses:
         "200":
@@ -99,9 +130,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NewsItem'
+              example:
+                - id: 1
+                  title: Neue Saison startet
+                  description: Die neue Bundesliga-Saison beginnt am Wochenende.
+                  url: https://news.example.com/article1
+                  published_at: 2025-06-15T10:00:00Z
+                  created_by: admin.user
 
     post:
       summary: Neue News anlegen (Admin)
+      description: Fügt einen neuen News-Eintrag hinzu. Nur für Admins zugänglich.
       operationId: openapi_server.controllers.default_controller.api_news_post
       parameters:
         - name: requester
@@ -109,12 +148,18 @@ paths:
           required: true
           schema:
             type: string
+          description: Benutzername des Admins, der den Artikel erstellt
+          example: admin.user
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/NewsItemCreate'
+            example:
+              title: Neue Transfers bestätigt
+              description: Top-Spieler wechseln zur neuen Saison.
+              url: https://news.example.com/article2
       responses:
         "201": { description: News angelegt }
         "403": { description: Nicht autorisiert }
@@ -122,6 +167,7 @@ paths:
 
     delete:
       summary: News löschen (Admin, nur eigene)
+      description: Löscht eine vorhandene News, wenn der Ersteller mit dem anfragenden Benutzer übereinstimmt.
       operationId: openapi_server.controllers.default_controller.api_news_delete
       parameters:
         - name: id
@@ -129,11 +175,15 @@ paths:
           required: true
           schema:
             type: integer
+          description: ID der zu löschenden News
+          example: 2
         - name: requester
           in: query
           required: true
           schema:
             type: string
+          description: Benutzername des Admins, der die News löschen möchte
+          example: admin.user
       responses:
         "200": { description: News gelöscht }
         "403": { description: Nicht autorisiert }
@@ -148,10 +198,16 @@ components:
       properties:
         benutzername:
           type: string
+          description: Gewünschter Benutzername
+          example: max.mustermann
         passwort:
           type: string
+          description: Passwort für den Account
+          example: geheim123
         role_id:
           type: integer
+          description: ID der Rolle (1 = Admin, 2 = Benutzer)
+          example: 2
 
     LoginRequest:
       type: object
@@ -159,33 +215,53 @@ components:
       properties:
         benutzername:
           type: string
+          description: Benutzername für den Login
+          example: max.mustermann
         passwort:
           type: string
+          description: Passwort für den Login
+          example: geheim123
 
     LoginResponse:
       type: object
       properties:
         benutzername:
           type: string
+          description: Angemeldeter Benutzername
+          example: max.mustermann
         rolle:
           type: string
+          description: Zugewiesene Rolle des Benutzers
+          example: Admin
 
     NewsItem:
       type: object
       properties:
         id:
           type: integer
+          description: Eindeutige ID der News
+          example: 1
         title:
           type: string
+          description: Titel der News
+          example: Neue Saison startet
         description:
           type: string
+          description: Ausführliche Beschreibung der News
+          example: Die neue Bundesliga-Saison beginnt am Wochenende.
         url:
           type: string
+          description: Link zur Originalquelle
+          example: https://news.example.com/article1
         published_at:
           type: string
           format: date-time
+          description: Veröffentlichungsdatum der News
+          example: 2025-06-15T10:00:00Z
         created_by:
           type: string
+          description: Benutzername des Erstellers
+          example: admin.user
 
     NewsItemCreate:
       type: object
@@ -193,7 +269,14 @@ components:
       properties:
         title:
           type: string
+          description: Titel der neuen News
+          example: Neue Transfers bestätigt
         description:
           type: string
+          description: Inhalt der News
+          example: Top-Spieler wechseln zur neuen Saison.
         url:
           type: string
+          description: Externe Quelle
+          example: https://news.example.com/article2
+
