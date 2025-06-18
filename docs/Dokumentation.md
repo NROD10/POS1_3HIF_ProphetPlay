@@ -86,10 +86,36 @@
 - Sinvolle Admin Implementierung. Admin kann nun News erstellen und löschen, User kann diese Lesen
 - Umsetzung: Nathan
 
+# Projektplanung (Lastenheft)
+Projektziel Überlegung:
+Entwicklung einer Desktop-Anwendung mit moderner Oberfläche (WPF), die Sport-News und Live-Spiele verschiedener Ligen darstellt. Inklusive Benutzerverwaltung, Login-System und Admin-Funktionalitäten (News-Erstellung & -Löschung).
+
+Setup & Grundstruktur:
+Initiales Git-Repository mit .gitignore einrichten
+Ordnerstruktur für Dokumentation (Klassendiagramme, Flussdiagramme etc.)
+
+UI-Design & erste Komponenten:
+Startseite-Design
+Login- & Registrierungsfenster mit WPF
+
+
+Backend-API:
+Aufsetzen der API mit Connexion & Swagger
+Endpunkte für Login/News erstellen
+Supabase-Anbindung für News (CRUD über REST)
+API-Tests & Fehlerbehandlung
+
+News im Hauptfenster anzeigen (ListBox + Detailansicht)
+Ligenanzeige und Spielefenster bei Klick
+
+Benutzerverwaltung:
+Rollensystem mit Admin/User (Tabellenstruktur angepasst)
+Integration in Login-Flow
+Rechtebasiertes Löschen & Erstellen von News
+
+
 # Umsetzungsdetails (Pflichtenheft) – ProphetPlay
-
 ---
-
 ## 1. Softwarevoraussetzungen
 
 | Komponente               | Version / Anforderung                       |
@@ -220,3 +246,10 @@ Man sieht auch die LiveSpiele und die 10 kommenden Spiele(Falls vorhanden). ![al
 
 ## SpielInfos
 Dort sieht man dann die genauen Spielinformationen was genau im diesem Spiel passiert ist, also die Tore, Karten, Auswechlungen,... mit dem jeweiligen Namen der Spieler und des Vereins. Man sieht auch in Welcher Minute das passiert ist. ![alt text](image-9.png)
+
+# Quellen mit denen wir gearbeitet haben:
+1. https://www.api-football.com
+2. https://newsapi.org
+3. https://supabase.com
+4. https://chatgpt.com
+5. https://draw.io
