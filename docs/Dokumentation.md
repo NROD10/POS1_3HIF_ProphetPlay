@@ -191,3 +191,32 @@
 - **Integrationstests**: Zusammenspiel von Frontend, Backend-API und Datenbank getestet  
 - **Manuelles Testing**: Benutzerflows in der WPF-App durchgespielt (Login, News erstellen/löschen, Live-Ticker)  
 - **Fehlerfälle**: Netzwerkausfälle und ungültige Eingaben simuliert
+---
+
+
+# Bedienungsanleitung mit Screenshots
+
+## Login
+Wenn man das Projekt starten kommt man zu Login-Fenster. Dort kann man den Benutzername und das Passwort eingeben. ![alt text](image.png)
+Wenn man auf  "Noch kein Konto? Jetzt registrieren" klickt kommt man zum RegistrierFenster. Wenn man auf dem Button "Einloggen" klickt und man die richtigen Daten eingegeben hat kommt man zu der Startseite.
+
+## Registrierung
+Hier erstellt man seinen Benutzer mit entweder Admin oder User als Rolle. Beim Button "Zurück zum Login" kommt man wieder zum Login Fenster. Beim Button "Konto erstellen" erstellt man sein Konto und man kommt zu dem Login Fenster.
+![alt text](image-1.png)
+
+## Startseite
+![alt text](image-2.png)
+Hier Sieht man den bereich News wo man die neusten News sieht. Wenn man auf eine News doppelklickt dann kommen genauere Infos zu diesen News. ![alt text](image-3.png)
+Dann sieht man die ganzen Ligen die es gibt in der Mitte. Man kann auch oben auf der Suchleiste nach einer Liga oder nach einem Land suchen und es zeigen dann diese Ligen an. ![alt text](image-4.png)
+Wenn man auf eine Liga draufklickt dann kommt man zur Spielen-Fenster der jeweiligen Ligen. 
+Rechts sieht man noch die Favoriten zu der aktuellen Klub-WM.
+Unten rechts gibts noch den Abmelde Button. Da kommt man wieder auf die Login Seite
+Wenn man sich als Admin anmeldet, werden noch alle Benutzer angezeigt die man auch löschen kann ![alt text](image-5.png). Man kann auch eigene News erstellen und löschen. ![alt text](image-6.png)
+
+## SpieleFenster
+Dort sieht man die Liga in der wir gerade sind. Man sieht die vergangenen 5 Spiele dieser Liga mit dem Endstand und wer gegeneinander gespielt hat. ![alt text](image-7.png)
+Wenn man auf ein Spiel draufklickt, dann kommt ein genaueres SpielInfo Fenster mit den Liveticker.
+Man sieht auch die LiveSpiele und die 10 kommenden Spiele(Falls vorhanden). ![alt text](image-8.png)
+
+## SpielInfos
+Dort sieht man dann die genauen Spielinformationen was genau im diesem Spiel passiert ist, also die Tore, Karten, Auswechlungen,... mit dem jeweiligen Namen der Spieler und des Vereins. Man sieht auch in Welcher Minute das passiert ist. ![alt text](image-9.png)
