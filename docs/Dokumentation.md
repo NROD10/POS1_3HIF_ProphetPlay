@@ -184,3 +184,10 @@
 | **WPF-Binding-Errors für Converter**             | Converter nicht in XAML-Namespace gelistet | `<local:IsAdminToVisibilityConverter/>` in `<Window.Resources>` |
 | **Supabase-Timeouts / Rate-Limits**              | Viele parallele Queries                      | Batch-Requests, Caching, Query-Optimierung                   |
 ---
+
+## Wie wurde die Software getestet
+
+- **Unit-Tests**: Kernkomponenten und Logik einzeln geprüft  
+- **Integrationstests**: Zusammenspiel von Frontend, Backend-API und Datenbank getestet  
+- **Manuelles Testing**: Benutzerflows in der WPF-App durchgespielt (Login, News erstellen/löschen, Live-Ticker)  
+- **Fehlerfälle**: Netzwerkausfälle und ungültige Eingaben simuliert
